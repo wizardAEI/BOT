@@ -206,70 +206,81 @@ export default function () {
                   const [showMore, setShowMore] = createSignal(false)
                   return (
                     <>
-                      <div class="flex w-full items-center justify-between rounded-t-lg border-0 border-b border-solid border-b-gray bg-dark-plus px-2 py-1">
+                      <div class="relative z-10 flex w-full items-center rounded-t-lg border-0 border-b border-solid border-b-gray bg-dark-plus px-2 py-1">
                         <div class="flex items-center gap-3">
                           {h.starred && '⭐️ '}
                           {h.contents[0].role === 'question' ? '问答记录' : '对话记录'}
                         </div>
-                        <Show
-                          fallback={
-                            <div class={iconClass[0]} onClick={() => setShowMore(true)}>
-                              <MoreHIcon width={20} height={20} class={iconClass[1]} />
-                            </div>
-                          }
-                          when={showMore()}
-                        >
-                          <div
-                            class="flex gap-2"
-                            ref={(el) => {
-                              const fn = (e) => {
-                                if (e.target && el.contains(e.target)) {
-                                  e.stopPropagation()
-                                  return
-                                }
-                                setShowMore(false)
-                              }
-                              document.addEventListener('click', fn)
-                              onCleanup(() => {
-                                document.removeEventListener('click', fn)
-                              })
-                            }}
+                        <div class="absolute right-2 top-[2px]">
+                          <Show
+                            fallback={
+                              <div class={iconClass[0]} onClick={() => setShowMore(true)}>
+                                <MoreHIcon width={20} height={20} class={iconClass[1]} />
+                              </div>
+                            }
+                            when={showMore()}
                           >
                             <div
-                              class={iconClass[0]}
-                              onClick={() => {
-                                h.starred ? starHistory(h.id, false) : starHistory(h.id, true)
-                              }}
-                            >
-                              <StarIcon
-                                width={20}
-                                height={20}
-                                class={`cursor-pointer ${h.starred ? 'text-active' : 'text-gray group-hover/btn:text-active/80'}`}
-                              />
-                            </div>
-                            <div
-                              onClick={() => {
-                                copyHistory(h.id).then(() => {
-                                  toast.success('拷贝成功')
+                              class="flex flex-col gap-1 rounded-md bg-dark px-2 py-1 shadow-center"
+                              ref={(el) => {
+                                const fn = (e) => {
+                                  if (e.target && el.contains(e.target)) {
+                                    e.stopPropagation()
+                                    return
+                                  }
+                                  setShowMore(false)
+                                }
+                                document.addEventListener('click', fn)
+                                onCleanup(() => {
+                                  document.removeEventListener('click', fn)
                                 })
                               }}
-                              class={iconClass[0]}
                             >
-                              <CopyIcon width={19} height={19} class={iconClass[1]} />
-                            </div>
-                            <DoubleConfirm
-                              label="确认删除"
-                              position="-right-2 top-3"
-                              onConfirm={() => {
-                                removeHistory(h.id)
-                              }}
-                            >
-                              <div class={iconClass[0]}>
-                                <TrashIcon height={20} width={20} class={iconClass[1]} />
+                              <div
+                                class={iconClass[0]}
+                                onClick={() => {
+                                  h.starred ? starHistory(h.id, false) : starHistory(h.id, true)
+                                }}
+                              >
+                                <StarIcon
+                                  width={20}
+                                  height={20}
+                                  class={`cursor-pointer ${h.starred ? 'text-active' : 'text-gray group-hover/btn:text-active/80'}`}
+                                />
+                                <span class={iconClass[1]}>收藏历史</span>
                               </div>
-                            </DoubleConfirm>
-                          </div>
-                        </Show>
+                              <div
+                                onClick={() => {
+                                  copyHistory(h.id).then(() => {
+                                    toast.success('拷贝成功')
+                                  })
+                                }}
+                                class={iconClass[0]}
+                              >
+                                <CopyIcon width={20} height={20} class={iconClass[1]} />
+                                <span class={iconClass[1]}>点击拷贝</span>
+                              </div>
+                              <DoubleConfirm
+                                label="确认删除"
+                                position="-right-2 top-3"
+                                onConfirm={() => {
+                                  removeHistory(h.id)
+                                }}
+                              >
+                                <div class={iconClass[0]}>
+                                  <TrashIcon
+                                    height={20}
+                                    width={20}
+                                    class="text-danger group-hover/btn:text-active"
+                                  />
+                                  <span class="text-danger group-hover/btn:text-active">
+                                    删除历史
+                                  </span>
+                                </div>
+                              </DoubleConfirm>
+                            </div>
+                          </Show>
+                        </div>
                       </div>
                       <div
                         class="group/history-box relative mb-3 flex w-full cursor-pointer flex-col gap-2 rounded-b-lg border-2 border-solid border-transparent bg-dark p-4 pt-2 duration-150 hover:border-active lg:max-w-4xl"
