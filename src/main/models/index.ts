@@ -350,3 +350,11 @@ export function deleteCollection(id: string) {
   }
   collectionsDB.write()
 }
+
+export function stickTopCollection(id: string) {
+  const index = collectionsDB.data?.findIndex((item) => item.id === id)
+  if (index !== -1) {
+    const c = collectionsDB.data!.splice(index, 1)[0]
+    collectionsDB.data!.unshift(c)
+  }
+}

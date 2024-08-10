@@ -265,11 +265,7 @@ export default function () {
                               }}
                             >
                               <div class={iconClass[0]}>
-                                <TrashIcon
-                                  height={20}
-                                  width={20}
-                                  class="cursor-pointer text-gray duration-100 hover:text-active"
-                                />
+                                <TrashIcon height={20} width={20} class={iconClass[1]} />
                               </div>
                             </DoubleConfirm>
                           </div>
@@ -298,7 +294,7 @@ export default function () {
                                           {index() === 0 && (
                                             <span class="mr-1">{map[c.role] || '我：'}</span>
                                           )}
-                                          {SpecialTypeContent(m)}
+                                          {SpecialTypeContent(m, 150)}
                                         </>
                                       )
                                     }}

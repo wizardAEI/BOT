@@ -8,7 +8,11 @@ import CapsuleIcon from '@renderer/assets/icon/CapsuleIcon'
 import { decorateContent } from './utils'
 
 // 预渲染一遍，不考虑响应式
-export default function SpecialTypeContent(meta: ContentDisplay, displayFull?: boolean) {
+export default function SpecialTypeContent(
+  meta: ContentDisplay,
+  max: number = 50,
+  displayFull: boolean = false
+) {
   if (meta.type === 'file') {
     return (
       <span class="inline-flex items-start break-words pr-1">
@@ -39,7 +43,7 @@ export default function SpecialTypeContent(meta: ContentDisplay, displayFull?: b
     return (
       <span class="inline-flex items-start break-words">
         <NetworkIcon class="shrink-0 grow-0 translate-y-[1px] text-text2" width={18} height={18} />
-        <span class="text-text2">{decorateContent(meta.question)}</span>
+        <span class="text-text2">{decorateContent(meta.question, max)}</span>
       </span>
     )
   }
@@ -51,7 +55,7 @@ export default function SpecialTypeContent(meta: ContentDisplay, displayFull?: b
           width={17}
           height={17}
         />
-        <span class="text-text2">{decorateContent(meta.question)}</span>
+        <span class="text-text2">{decorateContent(meta.question, max)}</span>
       </span>
     )
   }

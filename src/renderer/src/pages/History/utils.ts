@@ -1,6 +1,6 @@
-export function decorateContent(c: string) {
-  if (c.length > 50) {
-    return c.slice(0, 50) + ' ......'
+export function decorateContent(c: string, max: number = 50) {
+  if (c.length > max) {
+    return c.slice(0, max) + ' ......'
   }
   return c
 }

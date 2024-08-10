@@ -3,9 +3,9 @@ import { createStore } from 'solid-js/store'
 import { CollectionModel } from 'src/main/models/model'
 import { cloneDeep } from 'lodash'
 
-import { answerStore } from './answer'
+import { answerStore, setAnswerStore } from './answer'
 import { userData } from './user'
-import { msgs } from './chat'
+import { msgs, setMsgMeta, setMsgs } from './chat'
 
 export const [collections, setCollections] = createStore<CollectionModel[]>([])
 
@@ -95,4 +95,24 @@ export async function updateCollection(id: string, index: number) {
 export async function removeCollection(id: string) {
   await window.api.deleteCollection(id)
   loadCollection()
+}
+
+export async function StickTop(id: string) {
+  await window.api.stickTopCollection(id)
+  loadCollection()
+}
+
+export async function witchToChat(c: CollectionModel['contents'][number]) {
+  if (c[0].type === 'ans') {
+    setAnswerStore('question', c[0].content)
+    setAnswerStore('answer', c[1].content)
+  } else {
+    setMsgs(
+      c.map((item) => ({
+        id: item.id!,
+        role: item.role as 'human' | 'system' | 'ai',
+        content: item.content
+      }))
+    )
+  }
 }

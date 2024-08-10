@@ -30,7 +30,8 @@ import {
   deleteCollection,
   updateCollection,
   setFontFamily,
-  setOpenAtLogin
+  setOpenAtLogin,
+  stickTopCollection
 } from './models/index'
 import {
   AssistantModel,
@@ -194,6 +195,7 @@ export function initAppEventsHandler() {
     createCollection(collection)
   )
   ipcMain.handle('delete-collection', (_, id: string) => deleteCollection(id))
+  ipcMain.handle('stick-top-collection', (_, id: string) => stickTopCollection(id))
   ipcMain.handle('update-collection', (_, collection: CollectionModel) =>
     updateCollection(collection)
   )

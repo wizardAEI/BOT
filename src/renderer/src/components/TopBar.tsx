@@ -1,5 +1,5 @@
 import AnswerIcon from '@renderer/assets/icon/AnswerIcon'
-import ChatIcon from '@renderer/assets/icon/ChatIcon'
+import ChatFullIcon from '@renderer/assets/icon/ChatFullIcon'
 import HistoryIcon from '@renderer/assets/icon/base/HistoryIcon'
 import SettingIcon from '@renderer/assets/icon/base/SettingIcon'
 import CrossIcon from '@renderer/assets/icon/base/win/WinCrossIcon'
@@ -72,7 +72,7 @@ function Entries() {
 
       <ToolTip
         label={
-          <ChatIcon
+          <ChatFullIcon
             width={18}
             height={18}
             onClick={() => {

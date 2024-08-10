@@ -100,6 +100,8 @@ export const api = {
   createCollection: (collection: CreateCollectionModel) =>
     ipcRenderer.invoke('create-collection', collection),
   deleteCollection: (collectionId: string) => ipcRenderer.invoke('delete-collection', collectionId),
+  stickTopCollection: (collectionId: string) =>
+    ipcRenderer.invoke('stick-top-collection', collectionId),
   updateCollection: (collection: CollectionModel) =>
     ipcRenderer.invoke('update-collection', collection),
 
