@@ -1,9 +1,11 @@
 import { modelDict } from '@lib/langchain'
 import { getModelOptions } from '@renderer/components/MainSelections/ModelSelect'
+import BotIcon from '@renderer/components/ui/BotIcon'
 import Button from '@renderer/components/ui/Button'
 import QuestionMention from '@renderer/components/ui/QuestionMention'
 import Select from '@renderer/components/ui/Select'
 import { useToast } from '@renderer/components/ui/Toast'
+import { getRandomString } from '@renderer/lib/util'
 import { createSignal } from 'solid-js'
 import type { JSXElement } from 'solid-js'
 import { AssistantModel } from 'src/main/models/model'
@@ -17,16 +19,7 @@ function Field(props: { title: string; children: JSXElement }) {
   )
 }
 
-function FlexField(props: { title: string | JSXElement; children: JSXElement }) {
-  return (
-    <div class="item-center relative mb-2 mt-3 flex justify-between">
-      <span class="font-medium">{props.title}</span>
-      {props.children}
-    </div>
-  )
-}
-
-export default function (props: {
+export default function EditBox(props: {
   assistant: AssistantModel
   onCancel: () => void
   onSave: (a: AssistantModel) => void
@@ -46,23 +39,39 @@ export default function (props: {
   }))
   return (
     <div class="relative mx-2 my-4 rounded-2xl bg-dark p-4 duration-150">
-      <Field title="助手名称">
-        <input
-          type="text"
-          value={a().name}
-          onChange={(e) => setField('name', e.currentTarget.value)}
-          placeholder="助手名称"
-        />
-      </Field>
-      <FlexField
-        title={
+      <div class="mb-2 flex items-center gap-4 md:justify-center">
+        <div
+          class="relative flex cursor-pointer"
+          onClick={() => {
+            const seed = getRandomString(5)
+            console.log(seed)
+            setField('avatar', seed)
+          }}
+        >
+          <BotIcon size={60} seed={a().avatar || a().id.slice(-5)} />
+          <div class="absolute -top-0 right-0 z-10 flex h-full w-full items-center justify-center rounded-full bg-black/30 text-xs text-text1/80 opacity-0 duration-200 hover:opacity-100">
+            点击随机
+          </div>
+        </div>
+        <div class="flex flex-col gap-2">
+          <span class="font-medium">助手名称</span>
+          <input
+            type="text"
+            value={a().name}
+            onChange={(e) => setField('name', e.currentTarget.value)}
+            placeholder="助手名称"
+          />
+        </div>
+      </div>
+      <div class="item-center relative mb-2 mt-3 flex w-full justify-between md:justify-center">
+        <span class="flex items-center font-medium">
+          {' '}
           <div class="flex gap-1">
             助手偏好模型
             <QuestionMention content="选择助手偏好模型后，下次使用助手时，将自动切换该模型" />
           </div>
-        }
-      >
-        <div class="absolute right-0 w-[120px]">
+        </span>
+        <div class="max-w-[180px] pl-4">
           <Select
             defaultValue={a().matchModel || 'current'}
             options={[
@@ -77,7 +86,7 @@ export default function (props: {
             }}
           />
         </div>
-      </FlexField>
+      </div>
       <Field title="介绍">
         <input
           type="text"

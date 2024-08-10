@@ -29,6 +29,7 @@ export type AssistantModel = (
 ) & {
   id: string
   version: number
+  avatar?: string
   name: string
   introduce?: string
   prompt: string

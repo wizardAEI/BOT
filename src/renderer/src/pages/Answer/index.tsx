@@ -88,7 +88,13 @@ export default function Answer() {
         </Show>
         <Show when={answerStore.answer}>
           <Show when={!ansStatus.isGenerating}>
-            <Capsule type="ans" botName={getCurrentAssistantForAnswer().name} />
+            <Capsule
+              type="ans"
+              botName={getCurrentAssistantForAnswer().name}
+              seed={
+                getCurrentAssistantForAnswer().avatar || getCurrentAssistantForAnswer().id.slice(-5)
+              }
+            />
           </Show>
           <Message
             content={answerStore.answer}

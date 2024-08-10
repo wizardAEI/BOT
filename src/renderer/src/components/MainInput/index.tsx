@@ -32,6 +32,7 @@ const typeDict: {
 const multiModals = [
   'GPT4',
   'GPTCustom',
+  'GPTMINI',
   'Ollama',
   'Moonshot8k',
   'Moonshot32k',

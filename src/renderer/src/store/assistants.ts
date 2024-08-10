@@ -2,6 +2,7 @@ import { createStore, produce } from 'solid-js/store'
 import { AssistantModel } from 'src/main/models/model'
 import { createMemo } from 'solid-js'
 import { cloneDeep } from 'lodash'
+import { getRandomString } from '@renderer/lib/util'
 
 import { changeMatchModel, userData } from './user'
 
@@ -25,6 +26,7 @@ export function createNewAssistant(type: 'chat' | 'ans') {
   const newA: AssistantModel = {
     type,
     id: 'creating',
+    avatar: getRandomString(5),
     name: '',
     version: 1,
     prompt: ''

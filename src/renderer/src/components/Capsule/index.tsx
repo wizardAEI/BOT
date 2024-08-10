@@ -9,8 +9,9 @@ import { event } from '@renderer/lib/util'
 
 import CapitalIcon from '../ui/CapitalIcon'
 import ModelSelect from '../MainSelections/ModelSelect'
+import BotIcon from '../ui/BotIcon'
 
-export default function (props: { type: 'chat' | 'ans'; botName: string }) {
+export default function Capsule(props: { type: 'chat' | 'ans'; botName: string; seed?: string }) {
   const nav = useNavigate()
   return (
     <div class="group/capsule fixed left-1/2 top-10 z-20 flex -translate-x-1/2 select-none items-center rounded-xl border-2 border-solid border-dark-con bg-dark-pro duration-200">
@@ -18,20 +19,23 @@ export default function (props: { type: 'chat' | 'ans'; botName: string }) {
         onClick={() => {
           nav('/assistants?type=' + props.type)
         }}
-        class="mx-[-2px] my-[-2px] flex cursor-pointer items-center gap-[2px] rounded-xl rounded-r-none border-2 border-solid border-transparent px-[6px] py-[2px] text-text2 hover:border-active hover:text-text1"
+        class="mx-[-2px] my-[-2px] flex cursor-pointer items-center gap-1 rounded-xl rounded-r-none border-2 border-solid border-transparent px-[6px] py-[2px] text-text2 hover:border-active hover:text-text1"
       >
-        <CapitalIcon bg="bg-active-gradient" size={16} content={props.botName} />
-        <span class="max-w-[120px] truncate text-sm">{props.botName}</span>
+        {/* <CapitalIcon bg="bg-active-gradient" size={16} content={props.botName} /> */}
+        <BotIcon size={17} seed={props.seed || 'default'} />
+        <span class="mt-[1px] max-w-[120px] truncate text-sm leading-[17px]">{props.botName}</span>
       </div>
       <Show when={memoCapsule()}>
         <div
           onClick={() => {
             nav('/memories?type=' + props.type)
           }}
-          class="my-[-2px] ml-[-2px] flex h-7 cursor-pointer items-center gap-[2px] border-2 border-solid border-transparent px-1 text-text2 hover:border-active hover:text-text1"
+          class="my-[-2px] ml-[-2px] flex h-7 cursor-pointer items-center gap-1 border-2 border-solid border-transparent px-1 text-text2 hover:border-active hover:text-text1"
         >
-          <CapitalIcon bg="bg-green-gradient" size={16} content={getCurrentMemo().name} />
-          <span class="max-w-[120px] truncate text-sm">{getCurrentMemo().name}</span>
+          <CapitalIcon bg="bg-green-gradient" size={17} content={getCurrentMemo().name} />
+          <span class="mt-[1px] max-w-[120px] truncate text-sm leading-[17px]">
+            {getCurrentMemo().name}
+          </span>
         </div>
       </Show>
       <div class="relative my-[-2px] mr-[-2px] rounded-xl rounded-l-none border-2 border-solid border-transparent px-[6px] py-[3px] hover:border-active">

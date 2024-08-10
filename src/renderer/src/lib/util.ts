@@ -50,3 +50,12 @@ export const isValidUrl = (url: string) => {
     return false
   }
 }
+
+export const getRandomString = (len: number) => {
+  const str = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
+  let result = ''
+  for (let i = 0; i < len; i++) {
+    result += str[Math.floor(Math.random() * str.length)]
+  }
+  return result
+}

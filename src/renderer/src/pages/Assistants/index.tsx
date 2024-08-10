@@ -18,6 +18,8 @@ import { For, Show, onCleanup, onMount } from 'solid-js'
 import DoubleConfirm from '@renderer/components/ui/DoubleConfirm'
 import { useToast } from '@renderer/components/ui/Toast'
 import TrashIcon from '@renderer/assets/icon/TrashIcon'
+import BotIcon from '@renderer/components/ui/BotIcon'
+import InuseIcon from '@renderer/assets/icon/InuseIcon'
 
 import EditBox from './EditBox'
 
@@ -95,19 +97,21 @@ export default function () {
                   }
                 }}
               >
-                <div class="flex items-center">
+                <Show
+                  when={
+                    getCurrentAssistantForAnswer()?.id === a.id ||
+                    getCurrentAssistantForChat()?.id === a.id
+                  }
+                >
+                  <InuseIcon
+                    width={34}
+                    height={34}
+                    class="absolute -right-[2px] -top-[2px] text-active"
+                  />
+                </Show>
+                <div class="relative flex items-center">
                   <div class="flex flex-1 items-center gap-2">
-                    <CapitalIcon
-                      size={26}
-                      content={a.name}
-                      bg={
-                        getCurrentAssistantForAnswer()?.id === a.id ||
-                        getCurrentAssistantForChat()?.id === a.id
-                          ? 'bg-active-gradient'
-                          : 'bg-gray'
-                      }
-                      hiddenTiptop
-                    />
+                    <BotIcon size={26} seed={a.avatar || a.id.slice(-5)} />
                     <div class="font-medium">{a.name}</div>
                   </div>
                   <div class="flex h-6 gap-1">
