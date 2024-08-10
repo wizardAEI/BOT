@@ -14,6 +14,7 @@ import { init as OCRInit } from './lib/ai/ocr'
 import System from './pages/System'
 import { loadMemories } from './store/memo'
 import { loadCollection } from './store/collection'
+import { event } from './lib/util'
 
 const App = (props) => {
   const nav = useNavigate()
@@ -122,6 +123,13 @@ const App = (props) => {
       const selectedText = window!.getSelection()!.toString()
       event!.clipboardData!.setData('text/plain', selectedText)
       event.preventDefault() // 阻止默认复制行为
+    })
+
+    // FEAT: 增加全局搜索
+    document.addEventListener('keydown', (e) => {
+      if ((e.key === 'f' || e.key === 'F') && (e.ctrlKey || e.metaKey)) {
+        event.emit('globalSearch')
+      }
     })
   })
 

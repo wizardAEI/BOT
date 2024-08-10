@@ -9,6 +9,7 @@ export type Events = {
   editUserMsg: (content: string, id: string) => void // 告知 Chat 页面修改用户的信息
   updateModels: (newModels: Models) => void // 告知修改模型信息
   stopSpeak: () => void // 告知页面停止说话
+  globalSearch: () => void // 告知页面进行全局搜索
 }
 export const event = {
   on<T extends keyof Events>(event: T, callback: Events[T]) {

@@ -10,6 +10,7 @@ import { changeMatchModel, currentLines, userState } from '@renderer/store/user'
 import { inputText, setInputText } from '@renderer/store/input'
 import { useToast } from '@renderer/components/ui/Toast'
 import { useEventListener } from 'solidjs-use'
+import GlobalSearch from '@renderer/components/Message/GlobalSearch'
 
 import {
   msgs,
@@ -150,6 +151,7 @@ export default function Chat() {
             seed={getCurrentAssistantForChat().avatar || getCurrentAssistantForChat().id.slice(-5)}
           />
         </Show>
+        <GlobalSearch />
         <div class="mx-auto w-full lg:max-w-6xl">
           <For each={msgs}>
             {(msg, index) => (

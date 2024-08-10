@@ -22,6 +22,7 @@ export function getDefaultConfig(): SettingModel {
     sendWithCmdOrCtrl: true,
     theme: 'gomoon-theme',
     chatFontSize: 14,
+    openAtLogin: false,
     fontFamily: 'default'
   }
 }

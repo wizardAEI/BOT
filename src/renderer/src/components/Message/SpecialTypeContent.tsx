@@ -7,7 +7,13 @@ import CapsuleIcon from '@renderer/assets/icon/CapsuleIcon'
 
 import Md from './Md'
 
-export default function SpecialTypeContent(meta: ContentDisplay, mdStyle: string) {
+export default function SpecialTypeContent(
+  meta: ContentDisplay,
+  mdStyle: string,
+  opt?: {
+    needSelectBtn?: boolean
+  }
+) {
   if (meta.type === 'file') {
     return (
       <div
@@ -50,7 +56,11 @@ export default function SpecialTypeContent(meta: ContentDisplay, mdStyle: string
     return (
       <div class="flex gap-1 py-[2px]">
         <CapsuleIcon class="shrink-0 grow-0 text-text-dark2" width={18} height={18} />
-        <Md class={mdStyle + ' text-text-dark2'} content={meta.question} />
+        <Md
+          class={mdStyle + ' text-text-dark2'}
+          needSelectBtn={opt?.needSelectBtn}
+          content={meta.question}
+        />
       </div>
     )
   }

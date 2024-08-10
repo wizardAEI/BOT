@@ -9,6 +9,8 @@ import { load } from 'cheerio'
 import { escape, escapeRegExp } from 'lodash'
 import SearchIcon from '@renderer/assets/icon/base/SearchIcon'
 
+import { findContent, setFindContent, showSearch } from './GlobalSearch'
+
 function customPostProcessor(md: MarkdownIt) {
   // latex_optimize 需要在 inline rule 之前，否则修改不会生效
   md.core.ruler.before('inline', 'latex_optimize', (state) => {
@@ -36,9 +38,9 @@ export default function Md(props: {
   class: string
   content: string
   onSpeak?: (c: string) => void
+  needSelectBtn?: boolean
 }) {
   let selectContent = ''
-  const [findContent, setFindContent] = createSignal('')
   const [source] = createSignal('')
   const { copy, copied } = useClipboard({ source, copiedDuring: 1000 })
   const [showSelectBtn, setShowSelectBtn] = createSignal(false)
@@ -53,7 +55,7 @@ export default function Md(props: {
     // FEAT: 用户滑动选择文本
     const showButton = (e: MouseEvent) => {
       const selection = window.getSelection()
-      setFindContent('')
+      !showSearch() && setFindContent('')
       if (selection) {
         if (selection.toString().length > 0) {
           setShowSelectBtn(true)
@@ -78,13 +80,12 @@ export default function Md(props: {
     }
     contentDom?.addEventListener('mouseup', showButton)
     window.addEventListener('mouseup', hideButton)
-    // 监听 ctrl + c 事件
     const handleKeydown = (e: KeyboardEvent) => {
       if ((e.ctrlKey && e.key === 'c') || (e.metaKey && e.key === 'c')) {
         setShowSelectBtn(false)
       }
       if ((e.ctrlKey && e.key === 'f') || (e.metaKey && e.key === 'f')) {
-        findText()
+        setShowSelectBtn(false)
       }
     }
     window.addEventListener('keydown', handleKeydown)
@@ -194,7 +195,7 @@ export default function Md(props: {
         // eslint-disable-next-line solid/no-innerhtml
         innerHTML={htmlString()}
       />
-      <Show when={showSelectBtn()}>
+      <Show when={showSelectBtn() && props.needSelectBtn}>
         <div ref={btn} class="fixed flex gap-1 rounded-lg bg-dark-con px-1 py-[2px]">
           <SpeechIcon
             onClick={() => {

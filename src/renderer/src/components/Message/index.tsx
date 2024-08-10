@@ -169,9 +169,16 @@ export default function Message(props: {
         <For each={meta()}>
           {(m) =>
             m.type === 'text' ? (
-              <Md class={mdStyle[props.type]} content={m.content} onSpeak={speakText} />
+              <Md
+                needSelectBtn
+                class={mdStyle[props.type]}
+                content={m.content}
+                onSpeak={speakText}
+              />
             ) : (
-              SpecialTypeContent(m, mdStyle[props.type])
+              SpecialTypeContent(m, mdStyle[props.type], {
+                needSelectBtn: true
+              })
             )
           }
         </For>
