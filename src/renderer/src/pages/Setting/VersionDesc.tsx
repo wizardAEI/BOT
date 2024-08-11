@@ -5,8 +5,12 @@ import { For, Show, createSignal } from 'solid-js'
 
 const versions = [
   {
+    version: '1.2.0',
+    contents: ['一些细节的优化', '新增了可随机的助手头像']
+  },
+  {
     version: '1.1.9',
-    contents: ['一些细节的优化', '字体主题功能上线~']
+    contents: ['一些细节的优化', 'Claude 模型上线', '字体主题功能上线~']
   },
   {
     version: '1.1.8',

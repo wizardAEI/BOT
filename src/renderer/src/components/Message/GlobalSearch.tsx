@@ -6,7 +6,6 @@ export const [findContent, setFindContent] = createSignal('')
 export const [showSearch, setShowSearch] = createSignal(false)
 export default function GlobalSearch() {
   onMount(() => {
-    console.log('global search mounted')
     const globalSearch = () => {
       if (showSearch()) {
         setFindContent('')

@@ -117,7 +117,7 @@ export function MsgPopupContents(props: {
                                           }}
                                         >
                                           <div>{c.name}</div>
-                                          <div>{c.contents.length} 条数据</div>
+                                          <div>{c.contents.length} 条对话</div>
                                         </div>
                                       </div>
                                     )
