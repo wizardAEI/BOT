@@ -206,7 +206,12 @@ export default function () {
                   const [showMore, setShowMore] = createSignal(false)
                   return (
                     <>
-                      <div class="relative z-10 flex w-full items-center rounded-t-lg border-0 border-b border-solid border-b-gray bg-dark-plus px-2 py-1">
+                      <div
+                        class={
+                          'relative z-10 flex w-full items-center rounded-t-lg border-0 border-b border-solid border-b-gray bg-dark-plus px-2 py-1 ' +
+                          (showMore() ? 'z-20' : '')
+                        }
+                      >
                         <div class="flex items-center gap-3">
                           {h.starred && '⭐️ '}
                           {h.contents[0].role === 'question' ? '问答记录' : '对话记录'}
