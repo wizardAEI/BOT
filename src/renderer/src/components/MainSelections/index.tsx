@@ -16,6 +16,8 @@ import { AssistantModel, MemoModel } from 'src/main/models/model'
 import { getCurrentMemo, memories } from '@renderer/store/memo'
 import { memoCapsule } from '@renderer/store/input'
 
+import BotIcon from '../ui/BotIcon'
+
 import ModelSelect from './ModelSelect'
 
 export default function (props: { type: 'chat' | 'ans' }) {
@@ -40,6 +42,7 @@ export default function (props: { type: 'chat' | 'ans' }) {
   return (
     <div class={'relative mx-4 text-text1 ' + (props.type === 'ans' ? 'mt-4' : 'mt-8')}>
       <div class="relative mx-auto flex max-w-4xl items-center justify-center gap-2 rounded-2xl bg-dark p-4">
+        <BotIcon size={20} seed={currentA().avatar || currentA().id.slice(-5)} />
         <span class="select-none text-base">{currentA().name}</span>
         <Show when={userData.firstTimeFor.modelSelect}>
           <div class="absolute bottom-[6px] right-8 animate-bounce select-none text-[12px]">
@@ -53,7 +56,7 @@ export default function (props: { type: 'chat' | 'ans' }) {
             hasFirstTimeFor('modelSelect')
           }}
         >
-          <ModelSelect size={22} position="right-0" />
+          <ModelSelect size={20} position="right-0" />
         </div>
       </div>
       <div class="mt-10 flex select-none flex-wrap justify-center gap-2 px-3">
@@ -64,16 +67,17 @@ export default function (props: { type: 'chat' | 'ans' }) {
                 setSelected(a.id)
               }}
               class={
-                'flex cursor-pointer flex-col items-center justify-center gap-2 rounded-md border-2 border-solid bg-dark px-4 py-1 hover:border-active ' +
+                'flex cursor-pointer items-center justify-center gap-2 rounded-md border-2 border-solid bg-dark px-4 py-1 hover:border-active ' +
                 (a.id === currentA().id ? 'border-active' : 'border-transparent')
               }
             >
+              <BotIcon size={16} seed={a.avatar || a.id.slice(-5)} />
               <span class="text-text1 ">{a.name}</span>
             </div>
           )}
         </For>
         <div
-          class="flex cursor-pointer flex-col items-center justify-center gap-2 rounded-md border-2 border-solid border-transparent bg-dark px-4 py-1 hover:border-active "
+          class="flex cursor-pointer items-center justify-center rounded-md border-2 border-solid border-transparent bg-dark px-4 py-1 hover:border-active "
           onClick={() => {
             nav('/assistants?type=' + props.type)
           }}

@@ -6,7 +6,7 @@ import { For, Show, createSignal } from 'solid-js'
 const versions = [
   {
     version: '1.2.0',
-    contents: ['一些细节的优化', '新增了可随机的助手头像']
+    contents: ['一些细节的优化', '文字搜索功能升级，操作更加丝滑', '新增了可随机的助手头像']
   },
   {
     version: '1.1.9',
