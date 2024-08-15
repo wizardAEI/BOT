@@ -8,6 +8,7 @@ import SystemHeader from '@renderer/components/MainSelections'
 import Capsule from '@renderer/components/Capsule'
 import { inputText, setInputText } from '@renderer/store/input'
 import { changeMatchModel, userState } from '@renderer/store/user'
+import GlobalSearch from '@renderer/components/Message/GlobalSearch'
 
 import { genAns, answerStore, ansStatus } from '../../store/answer'
 
@@ -82,6 +83,7 @@ export default function Answer() {
             </>
           }
         >
+          <GlobalSearch />
           <div class="mt-6">
             <Message content={answerStore.question} id="question" type="question" />
           </div>

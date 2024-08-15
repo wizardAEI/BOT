@@ -1,11 +1,12 @@
 import CrossMarkRound from '@renderer/assets/icon/base/CrossMarkRound'
 import { event } from '@renderer/lib/util'
-import { createSignal, onMount, Show } from 'solid-js'
+import { createSignal, onCleanup, onMount, Show } from 'solid-js'
 
 export const [findContent, setFindContent] = createSignal('')
 export const [showSearch, setShowSearch] = createSignal(false)
 export default function GlobalSearch() {
   onMount(() => {
+    console.log('globalSearch')
     const globalSearch = () => {
       if (showSearch()) {
         setFindContent('')
@@ -16,6 +17,9 @@ export default function GlobalSearch() {
       setShowSearch(!showSearch())
     }
     event.on('globalSearch', globalSearch)
+    onCleanup(() => {
+      event.off('globalSearch', globalSearch)
+    })
   })
 
   return (

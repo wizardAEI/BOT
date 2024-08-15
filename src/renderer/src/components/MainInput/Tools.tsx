@@ -414,9 +414,6 @@ export default function Tools(props: {
               />
             </label>
           </ToolWrap>
-          {/* <ToolWrap>Terminal执行 (开发者选项)</ToolWrap>
-        <ToolWrap onClick={() => toast.warning('还没做捏💦')}>代码开发 (开发者选项)</ToolWrap>
-        <ToolWrap onClick={() => toast.warning('还没做捏💦')}>图表制作</ToolWrap> */}
         </div>
         <Show when={showArrow()}>
           <RightArrow
