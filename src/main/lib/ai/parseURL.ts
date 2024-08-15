@@ -24,21 +24,23 @@ export async function parseURL2Str(url: string): Promise<string> {
     height: 600,
     webPreferences: {
       nodeIntegration: true
-    }
+    },
+    show: false
   })
-  tempWin.loadURL(url)
-  const res = await tempWin.webContents.executeJavaScript('document.documentElement.outerHTML')
-  $ = load(res)
-  doc = new Readability(new JSDOM($.html()).window.document).parse()
-  if (doc && doc?.textContent.length > 150) {
-    return `${doc.title}\n\n` + doc.textContent
+  try {
+    tempWin.loadURL(url)
+    const res = await tempWin.webContents.executeJavaScript('document.documentElement.outerHTML')
+    $ = load(res)
+    doc = new Readability(new JSDOM($.html()).window.document).parse()
+    if (doc && doc?.textContent.length > 150) {
+      return `${doc.title}\n\n` + doc.textContent
+    }
+  } finally {
+    tempWin.close()
+    // @ts-ignore
+    tempWin = null
   }
-
-  tempWin.close()
-  // @ts-ignore
-  tempWin = null
   return '无效网页'
-
   // 如果内容过少，则怀疑为单页面应用或遇到安全验证，使用puppeteer解析
   // try {
   //   const page = await (await puppeteer.launch()).newPage()
