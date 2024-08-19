@@ -13,7 +13,9 @@ about: 创建报告以帮助 Gomooon 改进
 
 ### 环境信息 (重要⭐️)
 
-- 操作系统：(Mac / Windows)
+- Gomooon 版本: [例如 1.2.0]
+
+- 操作系统：(Mac 14.1 / Windows 11)
 
 - 其他特殊环境信息：(例如：使用代理，使用 Docker 等)
 
