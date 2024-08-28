@@ -160,7 +160,7 @@ export function createTreeFromMarkdown(
 async function getQuestionsByLM(total: string): Promise<string[]> {
   const content = (
     await lmInvoke({
-      system: `我将会给你一段markdown文档，请你根据内容提出几个问题，使用序号标出。例如我给出：
+      system: `我将会给你一段markdown文档，请你根据内容在各维度上提出一些问题，使用序号标出。例如我给出：
 \`\`\`
 # A平台操作指南
 ## 登录与注册
