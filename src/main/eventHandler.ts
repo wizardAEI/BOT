@@ -10,7 +10,6 @@ import {
   getHistories,
   getUserData,
   loadAppConfig,
-  setCanMultiCopy,
   setQuicklyWakeUpKeys,
   setIsOnTop,
   setModels,
@@ -31,7 +30,8 @@ import {
   updateCollection,
   setFontFamily,
   setOpenAtLogin,
-  stickTopCollection
+  stickTopCollection,
+  setQuicklyAnsKey
 } from './models/index'
 import {
   AssistantModel,
@@ -51,6 +51,7 @@ import {
   isMaximized,
   maximize,
   minimize,
+  setQuicklyAns,
   setQuicklyWakeUp,
   unmaximize,
   updateRespHeaders,
@@ -125,8 +126,9 @@ export function initAppEventsHandler() {
     }
     setModels(models)
   })
-  ipcMain.handle('set-can-multi-copy', (_, canMultiCopy: boolean) => {
-    setCanMultiCopy(canMultiCopy)
+  ipcMain.handle('set-quickly-ans-key', (_, key: string) => {
+    setQuicklyAnsKey(key)
+    setQuicklyAns(key)
   })
   ipcMain.handle('set-quickly-wake-up-keys', (_, keys: string) => {
     setQuicklyWakeUpKeys(keys)

@@ -5,6 +5,15 @@ import { For, Show, createSignal } from 'solid-js'
 
 const versions = [
   {
+    version: '1.2.1',
+    contents: [
+      '一些细节的优化',
+      '新增了在对话框内右键的功能',
+      'ollama 现在可以配置更多模型啦',
+      '优化了快速问答快捷键'
+    ]
+  },
+  {
     version: '1.2.0',
     contents: ['一些细节的优化', '文字搜索功能升级，操作更加丝滑', '新增了可随机的助手头像']
   },

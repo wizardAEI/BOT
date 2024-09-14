@@ -18,7 +18,13 @@ import KimiIcon from '@renderer/assets/icon/models/KimiIcon'
 import FilePicker from '@renderer/components/ui/FilePicker'
 import OllamaIcon from '@renderer/assets/icon/models/OllamaIcon'
 import Select from '@renderer/components/ui/Select'
-import { setChatFontSize, setFontFamily, setOpenAtLogin, setTheme } from '@renderer/store/setting'
+import {
+  setChatFontSize,
+  setFontFamily,
+  setOpenAtLogin,
+  setQuicklyAnsKey,
+  setTheme
+} from '@renderer/store/setting'
 import { useToast } from '@renderer/components/ui/Toast'
 import CustomIcon from '@renderer/assets/icon/models/CustomIcon'
 import DeepSeekIcon from '@renderer/assets/icon/models/DeepSeekIcon'
@@ -31,7 +37,6 @@ import {
   setModels,
   updateModelsToFile,
   setSendWithCmdOrCtrl,
-  setCanMultiCopy,
   setQuicklyWakeUpKeys
 } from '../../store/setting'
 
@@ -370,6 +375,20 @@ export default function Setting() {
                     setModels(v.trim(), 'Ollama', 'model')
                   }}
                 />
+                <EditInput
+                  label="备用模型1"
+                  value={settingStore.models.Ollama.model1}
+                  onSave={(v) => {
+                    setModels(v.trim(), 'Ollama', 'model1')
+                  }}
+                />
+                <EditInput
+                  label="备用模型2"
+                  value={settingStore.models.Ollama.model2}
+                  onSave={(v) => {
+                    setModels(v.trim(), 'Ollama', 'model2')
+                  }}
+                />
                 <div class="mb-1 flex h-7 items-center gap-4">
                   <span class="font-bold">创造性/随机性</span>
                   <div class="w-60">
@@ -478,21 +497,10 @@ export default function Setting() {
               checked={settingStore.isOnTop}
               onCheckedChange={setIsOnTop}
             />
-            <Switch
-              label="双击复制进行问答"
-              hint="通过快速连按复制唤起 Gomoon 并问答（设置后需重启）"
-              checked={settingStore.canMultiCopy}
-              onCheckedChange={(v) => {
-                if (v) {
-                  toast.success('设置成功，重启应用后生效')
-                }
-                setCanMultiCopy(v)
-              }}
-            />
             <div class="item-center flex justify-between gap-3">
               <span class="h-6">唤起应用快捷键</span>
               <input
-                class="max-w-[112px] px-2 py-[1px] text-center"
+                class={`px-2 py-[1px] text-center ${settingStore.quicklyWakeUpKeys.split('+').length > 2 ? 'max-w-[150px]' : 'max-w-[80px]'}`}
                 value={settingStore.quicklyWakeUpKeys}
                 placeholder="唤起应用快捷键"
                 onKeyDown={(e) => {
@@ -535,6 +543,29 @@ export default function Setting() {
                   return true
                 }}
               />
+            </div>
+            <div class="item-center flex justify-between gap-3">
+              <span class="h-6">
+                快速问答快捷键 <QuestionMention content="通过快速连按唤起问答" />{' '}
+              </span>
+              <div>
+                {!navigator.userAgent.includes('Mac') ? '⌘' : 'Ctrl'} + C +{' '}
+                <input
+                  class="w-[24px] px-1 py-[1px] text-center"
+                  value={settingStore.quicklyAnsKey}
+                  placeholder="唤起应用快捷键"
+                  onKeyDown={(e) => {
+                    e.preventDefault()
+                    // 如果不是字母，则提示并返回
+                    if (!/[a-zA-Z]/.test(e.key) || e.key.length > 1) {
+                      toast.info('请在英文输入法下，输入字母')
+                      return false
+                    }
+                    setQuicklyAnsKey(e.key.toUpperCase())
+                    return true
+                  }}
+                />
+              </div>
             </div>
             <Switch
               label={

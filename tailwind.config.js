@@ -81,6 +81,7 @@ module.exports = {
             'text-dark': '#151b26', // 深色
             'text-dark2': '#276b84', // 深蓝绿
             'text-link': '#2382c6', // 链接色
+            border: '#004c86',
             mask: '#00000090',
             'white/70': '#ffffff70', // 白色透明度70%
             danger: '#cb3a27',
@@ -131,6 +132,7 @@ module.exports = {
               'text-dark': '#151b26', // 深色
               'text-dark2': '#276b84', // 深蓝绿
               'text-link': '#2382c6', // 链接色
+              border: '#489d83',
               mask: '#ffffff80',
               'white/70': '#ffffff70', // 白色透明度70%
               success: '#12c569', // 绿色

@@ -33,6 +33,40 @@ export interface ShowWindowParams {
   text: string
 }
 
+export function setQuicklyAns(key: string) {
+  !eventTracker?.killed && eventTracker?.kill()
+  let filename = 'eventTracker'
+  if (process.platform === 'win32') {
+    filename += '.exe'
+  } else if (process.arch === 'x64') {
+    filename = 'eventTracker_x64'
+  }
+  eventTracker = spawn(getResourcesPath(filename), ['--key', key])
+  eventTracker.stderr.on('data', (data) => {
+    if (`${data}`.includes('Failed to enable access')) {
+      console.log('Failed to enable access')
+      mainWindow?.once('show', () => {
+        mainWindow?.webContents.send('post-message', 'event-tracker-access-denied')
+      })
+    }
+  })
+  eventTracker.stdout.on('data', (data) => {
+    // FEAT: 双击复制回答
+    if (`${data}` === 'quickly-ans' && mainWindow) {
+      const copyText = clipboard.readText().trim()
+      if (!copyText) {
+        return
+      }
+      mainWindow.webContents.send('quickly-ans', copyText)
+      if (process.platform === 'win32') {
+        // FEAT: 兼容win使用show方法不会获取焦点的问题
+        mainWindow.minimize()
+      }
+      mainWindow.show()
+    }
+  })
+}
+
 export function setQuicklyWakeUp(keys: string) {
   /**
    * FEAT: 按键监听
@@ -297,39 +331,6 @@ export function createWindow(): void {
     shell.openExternal(event.url)
   })
 
-  let filename = 'eventTracker'
-  if (process.platform === 'win32') {
-    filename += '.exe'
-  } else if (process.arch === 'x64') {
-    filename = 'eventTracker_x64'
-  }
-  eventTracker = spawn(getResourcesPath(filename))
-  eventTracker.stderr.on('data', (data) => {
-    if (`${data}`.includes('Failed to enable access')) {
-      console.log('Failed to enable access')
-      mainWindow?.once('show', () => {
-        mainWindow?.webContents.send('post-message', 'event-tracker-access-denied')
-      })
-    }
-  })
-  eventTracker.stdout.on('data', (data) => {
-    // FEAT: 双击复制回答
-    if (userConfig.canMultiCopy) {
-      if (`${data}` === 'multi-copy' && mainWindow) {
-        const copyText = clipboard.readText().trim()
-        if (!copyText || !loadAppConfig().canMultiCopy) {
-          return
-        }
-        mainWindow.webContents.send('multi-copy', copyText)
-        if (process.platform === 'win32') {
-          // FEAT: 兼容win使用show方法不会获取焦点的问题
-          mainWindow.minimize()
-        }
-        mainWindow.show()
-      }
-    }
-  })
-
   mainWindow.on('ready-to-show', () => {
     mainWindow!.show()
     // Open the DevTools.
@@ -337,6 +338,7 @@ export function createWindow(): void {
   })
 
   //FEAT: 快捷键
+  setQuicklyAns(userConfig.quicklyAnsKey)
   setQuicklyWakeUp(userConfig.quicklyWakeUpKeys)
 
   // 点击关闭时隐藏窗口而不是退出

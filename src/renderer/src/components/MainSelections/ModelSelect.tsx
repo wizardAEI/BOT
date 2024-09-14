@@ -321,6 +321,38 @@ export function getModelOptions() {
       maxToken: modelDict['Ollama'].maxToken
     })
   }
+  if (settingStore.models.Ollama.address && settingStore.models.Ollama.model1) {
+    options.push({
+      label: <span>{modelDict['Ollama1'].label}</span>,
+      icon(size: number) {
+        return (
+          <OllamaIcon
+            width={size - 1}
+            height={size - 1}
+            class="cursor-pointer overflow-hidden rounded-md"
+          />
+        )
+      },
+      value: 'Ollama1',
+      maxToken: modelDict['Ollama'].maxToken
+    })
+  }
+  if (settingStore.models.Ollama.address && settingStore.models.Ollama.model2) {
+    options.push({
+      label: <span>{modelDict['Ollama2'].label}</span>,
+      icon(size: number) {
+        return (
+          <OllamaIcon
+            width={size - 1}
+            height={size - 1}
+            class="cursor-pointer overflow-hidden rounded-md"
+          />
+        )
+      },
+      value: 'Ollama2',
+      maxToken: modelDict['Ollama'].maxToken
+    })
+  }
 
   if (settingStore.models.Claude.apiKey) {
     options.push(

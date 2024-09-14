@@ -23,9 +23,9 @@ import { ShowWindowParams } from '../main/window'
 // Custom APIs for renderer
 export const api = {
   multiCopy: (callback: (event: IpcRendererEvent, msg: string) => void) => {
-    ipcRenderer.on('multi-copy', callback)
+    ipcRenderer.on('quickly-ans', callback)
     return () => {
-      ipcRenderer.removeListener('multi-copy', callback)
+      ipcRenderer.removeListener('quickly-ans', callback)
     }
   },
   showWindow: (callback: (event: IpcRendererEvent, data: ShowWindowParams) => void) => {
@@ -45,7 +45,7 @@ export const api = {
   loadConfig: () => ipcRenderer.invoke('load-config'),
   setConfig: () => ipcRenderer.invoke('set-config'),
   setModels: (models: SettingModel['models']) => ipcRenderer.invoke('set-models', models),
-  setCanMultiCopy: (b: boolean) => ipcRenderer.invoke('set-can-multi-copy', b),
+  setQuicklyAnsKey: (key: string) => ipcRenderer.invoke('set-quickly-ans-key', key),
   setQuicklyWakeUpKeys: (keys: string) => ipcRenderer.invoke('set-quickly-wake-up-keys', keys),
   setSendWithCmdOrCtrl: (b: boolean) => ipcRenderer.invoke('set-send-with-cmd-or-ctrl', b),
   setTheme: (theme: string) => ipcRenderer.invoke('set-theme', theme),

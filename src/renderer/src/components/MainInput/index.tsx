@@ -11,7 +11,7 @@ import { parseFile } from '@renderer/lib/ai/file'
 import { historyManager } from '@renderer/store/history'
 import NewChatIcon from '@renderer/assets/icon/NewChatIcon'
 import { ModelsType } from '@lib/langchain'
-import { useSearchParams } from '@solidjs/router'
+import { useLocation, useNavigate, useSearchParams } from '@solidjs/router'
 import SendIcon from '@renderer/assets/icon/SendIcon'
 
 import { useLoading } from '../ui/DynamicLoading'
@@ -19,6 +19,7 @@ import { useToast } from '../ui/Toast'
 import { clearMsgs, msgs, restoreMsgs } from '../../store/chat'
 
 import Tools, { Artifacts } from './Tools'
+import ContextContainer, { ContextAction } from './Context'
 
 const typeDict: {
   [key: string]: 'chat' | 'ans'
@@ -56,6 +57,8 @@ export default function Input(props: {
   onClear?: () => void
   onInput?: (e: InputEvent) => void
 }) {
+  const nav = useNavigate()
+  const location = useLocation()
   let textAreaDiv: HTMLTextAreaElement | undefined
   let textAreaContainerDiv: HTMLDivElement | undefined
   let isCompositing = false
@@ -64,6 +67,17 @@ export default function Input(props: {
   const [inputTokenNum, setInputTokenNum] = createSignal(0)
   const [artifactTokenNum, setArtifactTokenNum] = createSignal(0)
   const [artifacts, setArtifacts] = createSignal<Artifacts[]>([])
+  let contextContainer: HTMLDivElement | undefined
+  const [showContext, setShowContext] = createSignal(false)
+  const [haveSelected, setHaveSelected] = createSignal(false)
+  // 后续点击其他地方，隐藏右键菜单
+  const contextListener = (e: MouseEvent) => {
+    if (e.target === contextContainer || contextContainer!.contains(e.target as HTMLElement)) {
+      return
+    }
+    setShowContext(false)
+    window.removeEventListener('click', contextListener)
+  }
   const artifactContent = () => {
     const total = artifacts()
       .map((a) => a.val)
@@ -216,6 +230,42 @@ export default function Input(props: {
     }
   }
 
+  // 清空对话
+  const newChat = () => {
+    setRefreshing(true)
+    setTimeout(() => {
+      setRefreshing(false)
+    }, 600)
+    props.onClear?.()
+    if (props.type === 'ans' || props.type === 'question') {
+      toast.info(`${navigator.userAgent.includes('Mac') ? 'command' : 'ctrl'} + z 撤销`, {
+        duration: 1000,
+        position: 'top-3/4'
+      })
+      clearAns()
+      cleanupForRestoreMsgs = useEventListener(document, 'keydown', (e) => {
+        if ((e.key === 'z' && e.ctrlKey) || (e.key === 'z' && e.metaKey)) {
+          restoreAns()
+          cleanupForRestoreMsgs?.()
+        }
+      })
+      return
+    }
+    if (!msgs.length) return
+    toast.info('已创建新对话', {
+      duration: 1000,
+      position: 'top-3/4'
+    })
+    historyManager.newHistory('chat')
+    clearMsgs()
+    cleanupForRestoreMsgs = useEventListener(document, 'keydown', (e) => {
+      if ((e.key === 'z' && e.ctrlKey) || (e.key === 'z' && e.metaKey)) {
+        restoreMsgs()
+        cleanupForRestoreMsgs?.()
+      }
+    })
+  }
+
   //FEAT: 用户选中文字后，自动添加进输入框
   const [query, setQuery] = useSearchParams()
   createEffect(() => {
@@ -242,6 +292,28 @@ export default function Input(props: {
       })
     }
 
+    // 监测是否划选
+    const watchSelection = (e: MouseEvent) => {
+      if (e.target === textAreaDiv) {
+        setHaveSelected(window.getSelection()?.toString() !== '')
+      }
+    }
+
+    // 显示和隐藏右键菜单
+    const showContextContainer = (e) => {
+      setShowContext(true)
+      // 将contextContainer定位到鼠标位置, 如果超出屏幕，则调整到合适位置
+      contextContainer!.style.left =
+        e.clientX + contextContainer!.offsetWidth > window.innerWidth
+          ? `${e.clientX - contextContainer!.offsetWidth}px`
+          : `${e.clientX}px`
+      contextContainer!.style.top =
+        e.clientY + contextContainer!.offsetHeight > window.innerHeight
+          ? `${e.clientY - contextContainer!.offsetHeight}px`
+          : `${e.clientY}px`
+      window.addEventListener('click', contextListener)
+    }
+
     // 让input聚焦，box边框变为激活色
     const addActive = () => {
       textAreaContainerDiv!.attributes.setNamedItem(document.createAttribute('data-active'))
@@ -254,6 +326,8 @@ export default function Input(props: {
     textAreaDiv!.addEventListener('focus', addActive)
     textAreaDiv!.addEventListener('blur', removeActive)
     textAreaDiv!.addEventListener('paste', handlePaste)
+    textAreaDiv!.addEventListener('contextmenu', showContextContainer)
+    textAreaDiv!.addEventListener('click', watchSelection)
 
     props.onMountHandler?.(textAreaDiv!)
 
@@ -261,6 +335,8 @@ export default function Input(props: {
       textAreaDiv && textAreaDiv.removeEventListener('focus', addActive)
       textAreaDiv && textAreaDiv.removeEventListener('blur', removeActive)
       textAreaDiv && textAreaDiv.removeEventListener('paste', handlePaste)
+      textAreaDiv && textAreaDiv.removeEventListener('contextmenu', showContextContainer)
+      textAreaDiv && textAreaDiv.removeEventListener('click', watchSelection)
     })
   })
 
@@ -286,8 +362,61 @@ export default function Input(props: {
     }
   }
 
+  function handleContextAction(action: ContextAction) {
+    const star = textAreaDiv!.selectionStart
+    const end = textAreaDiv!.selectionEnd
+    if (action === 'copy') {
+      const selection = window.getSelection()
+      if (selection) {
+        navigator.clipboard.writeText(selection.toString())
+      }
+    }
+    if (action === 'cut') {
+      const selection = window.getSelection()
+      if (selection) {
+        navigator.clipboard.writeText(selection.toString())
+        setInputText(inputText()!.slice(0, star) + inputText()!.slice(end))
+      }
+    }
+    if (action === 'paste') {
+      navigator.clipboard.readText().then((text) => {
+        const value = inputText()!
+        setInputText(value.slice(0, star) + text + value.slice(end))
+      })
+    }
+    if (action === 'select-all') {
+      setTimeout(() => {
+        textAreaDiv!.focus()
+        textAreaDiv!.setSelectionRange(0, inputText()?.length)
+      }, 0)
+    }
+    if (action === 'clear') {
+      setInputText('')
+    }
+    if (action === 'new-chat') {
+      newChat()
+    }
+    if (action === 'switch') {
+      if (location.pathname === '/ans') {
+        nav('/')
+      } else {
+        nav('/ans')
+      }
+    }
+    window.removeEventListener('click', contextListener)
+    setShowContext(false)
+  }
+
   return (
     <div class="mx-auto flex flex-col gap-2 md:max-w-xl lg:max-w-3xl">
+      <div ref={contextContainer} class={`fixed z-40 ${showContext() ? '' : 'hidden'}`}>
+        <ContextContainer
+          onClick={handleContextAction}
+          type={props.type}
+          selected={haveSelected()}
+          generating={!!props.isGenerating}
+        />
+      </div>
       <Tools
         artifacts={artifacts}
         setArtifacts={setArtifacts}
@@ -298,43 +427,7 @@ export default function Input(props: {
         <Show when={props.showClearButton && !props.isGenerating && !inputText()?.length}>
           <div class="-ml-3 flex cursor-pointer items-center">
             <div
-              onClick={() => {
-                setRefreshing(true)
-                setTimeout(() => {
-                  setRefreshing(false)
-                }, 600)
-                props.onClear?.()
-                if (props.type === 'ans' || props.type === 'question') {
-                  toast.info(
-                    `${navigator.userAgent.includes('Mac') ? 'command' : 'ctrl'} + z 撤销`,
-                    {
-                      duration: 1000,
-                      position: 'top-3/4'
-                    }
-                  )
-                  clearAns()
-                  cleanupForRestoreMsgs = useEventListener(document, 'keydown', (e) => {
-                    if ((e.key === 'z' && e.ctrlKey) || (e.key === 'z' && e.metaKey)) {
-                      restoreAns()
-                      cleanupForRestoreMsgs?.()
-                    }
-                  })
-                  return
-                }
-                if (!msgs.length) return
-                toast.info('已创建新对话', {
-                  duration: 1000,
-                  position: 'top-3/4'
-                })
-                historyManager.newHistory('chat')
-                clearMsgs()
-                cleanupForRestoreMsgs = useEventListener(document, 'keydown', (e) => {
-                  if ((e.key === 'z' && e.ctrlKey) || (e.key === 'z' && e.metaKey)) {
-                    restoreMsgs()
-                    cleanupForRestoreMsgs?.()
-                  }
-                })
-              }}
+              onClick={newChat}
               class={`group/refresh ml-1 h-8 w-8 translate-y-[1px] rounded-full duration-200 ${props.type === 'ans' || props.type === 'question' ? 'p-[6px]' : 'p-[3px]'} hover:bg-dark-plus`}
             >
               <Show

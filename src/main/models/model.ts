@@ -88,7 +88,7 @@ export type CreateMemoModel = Omit<MemoModel, 'version'> & { version?: number }
 export type SettingFontFamily = 'default' | 'MiSans' | 'AlimamaFangyuan'
 export interface SettingModel {
   isOnTop: boolean
-  canMultiCopy: boolean
+  quicklyAnsKey: string
   quicklyWakeUpKeys: string
   sendWithCmdOrCtrl: boolean
   models: Models

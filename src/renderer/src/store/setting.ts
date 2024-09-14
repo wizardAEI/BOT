@@ -15,7 +15,7 @@ const [settingStore, setSettingStore] = createStore<
   isLoaded: false,
   models: defaultModels(),
   oldModels: defaultModels(),
-  canMultiCopy: false,
+  quicklyAnsKey: 'C',
   quicklyWakeUpKeys: '',
   sendWithCmdOrCtrl: false,
   theme: 'gomoon-theme',
@@ -29,9 +29,9 @@ export function setIsOnTop(v: boolean) {
   return window.api.setIsOnTop(v as boolean)
 }
 
-export function setCanMultiCopy(v: boolean) {
-  setSettingStore('canMultiCopy', v)
-  return window.api.setCanMultiCopy(v)
+export function setQuicklyAnsKey(v: string) {
+  setSettingStore('quicklyAnsKey', v)
+  return window.api.setQuicklyAnsKey(v)
 }
 
 export function setQuicklyWakeUpKeys(v: string) {
@@ -65,7 +65,7 @@ export async function loadConfig() {
   setSettingStore('isOnTop', config.isOnTop)
   setSettingStore('models', merge(unwrap(settingStore.models), config.models))
   setSettingStore('oldModels', cloneDeep(config.models))
-  setSettingStore('canMultiCopy', config.canMultiCopy)
+  setSettingStore('quicklyAnsKey', config.quicklyAnsKey)
   setSettingStore('quicklyWakeUpKeys', config.quicklyWakeUpKeys)
   setSettingStore('sendWithCmdOrCtrl', config.sendWithCmdOrCtrl)
   setSettingStore('isLoaded', true)

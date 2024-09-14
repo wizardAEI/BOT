@@ -56,6 +56,8 @@ export interface Models {
   Ollama: {
     address: string
     model: string
+    model1: string
+    model2: string
     temperature: number
   }
   // kimi
@@ -96,6 +98,8 @@ export type ModelsType =
   | 'Moonshot32k'
   | 'Moonshot128k'
   | 'Ollama'
+  | 'Ollama1'
+  | 'Ollama2'
   | 'ClaudeSonnet'
   | 'ClaudeOpus'
   | 'ClaudeHaiku'
@@ -180,6 +184,14 @@ export const modelDict: {
     label: 'Ollama',
     maxToken: 0
   },
+  Ollama1: {
+    label: 'Ollama 备用1',
+    maxToken: 0
+  },
+  Ollama2: {
+    label: 'Ollama 备用2',
+    maxToken: 0
+  },
   ClaudeSonnet: {
     label: 'Claude Sonnet',
     maxToken: 200000
@@ -230,6 +242,8 @@ export const defaultModels: () => Models = () => ({
   Ollama: {
     address: '',
     model: '',
+    model1: '',
+    model2: '',
     temperature: 0.3
   },
   Moonshot: {
@@ -368,7 +382,7 @@ export const newMoonshotModel = (
   })
   const oldInvoke = moonshot.invoke.bind(moonshot)
   moonshot.invoke = async (...args) => {
-    const msgs = args[0] as any
+    const msgs = args[0] as unknown
     if (isArray(msgs)) {
       for (const msg of msgs) {
         const content = msg.content
@@ -379,6 +393,7 @@ export const newMoonshotModel = (
               const file = base64ToFile(base64, 'image')
               const file_object = await client.files.create({
                 file,
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 purpose: 'file-extract' as any
               })
               const file_content = await (await client.files.content(file_object.id)).text()
@@ -398,14 +413,16 @@ export const newMoonshotModel = (
 export const newChatLlama = (config: { src: string; temperature: number }) => {
   return {
     invoke() {
-      throw new Error('Llama is not supported in browser')
+      throw new Error('Llama is not supported in browser: ' + JSON.stringify(config))
     }
   }
 }
 
-export const newOllamaModel = (config: { address: string; model: string; temperature: number }) => {
+export const newOllamaModel = (config: Models['Ollama'], index = 0) => {
+  const arr = ['model', 'model2', 'model3'] as const
+  console.log(config[arr[index]])
   const chatOllama = new ChatOllama({
-    model: config.model,
+    model: config[arr[index]],
     baseUrl: config.address,
     temperature: config.temperature
   })
@@ -472,6 +489,8 @@ export const loadLMMap = async (
   Moonshot128k: newMoonshotModel(model.Moonshot, 'moonshot-v1-128k'),
   Llama: newChatLlama(model.Llama),
   Ollama: newOllamaModel(model.Ollama),
+  Ollama1: newOllamaModel(model.Ollama, 1),
+  Ollama2: newOllamaModel(model.Ollama, 2),
   ClaudeHaiku: newClaudeModel(model.Claude, 'claude-3-haiku-20240307'),
   ClaudeSonnet: newClaudeModel(model.Claude, 'claude-3-5-sonnet-20240620'),
   ClaudeOpus: newClaudeModel(model.Claude, 'claude-3-opus-20240229'),
@@ -479,7 +498,7 @@ export const loadLMMap = async (
 })
 
 export const msgDict: {
-  [key in 'human' | 'system' | 'ai']: (c: MessageContent) => any
+  [key in 'human' | 'system' | 'ai']: (c: MessageContent) => unknown
 } = {
   human: (c: MessageContent) =>
     new HumanMessage({

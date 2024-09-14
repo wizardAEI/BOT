@@ -17,7 +17,7 @@ export function getDefaultConfig(): SettingModel {
   return {
     isOnTop: false,
     models: defaultModels(),
-    canMultiCopy: false,
+    quicklyAnsKey: 'C',
     quicklyWakeUpKeys: 'CmdOrCtrl+G',
     sendWithCmdOrCtrl: true,
     theme: 'gomoon-theme',
