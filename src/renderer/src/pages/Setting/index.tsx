@@ -519,7 +519,7 @@ export default function Setting() {
                       SpecialKey += 'Super+'
                     }
                   }
-                  e.ctrlKey && (SpecialKey += 'Control+')
+                  e.ctrlKey && (SpecialKey += 'Ctrl+')
 
                   // 判断是否是 Shift, Meta, Alt, Control 等特殊键, 如果是则阻止默认事件
                   if (
@@ -549,7 +549,7 @@ export default function Setting() {
                 快速问答快捷键 <QuestionMention content="通过快速连按唤起问答" />{' '}
               </span>
               <div>
-                {!navigator.userAgent.includes('Mac') ? '⌘' : 'Ctrl'} + C +{' '}
+                {navigator.userAgent.includes('Mac') ? '⌘' : 'Ctrl'} + C +{' '}
                 <input
                   class="w-[24px] px-1 py-[1px] text-center"
                   value={settingStore.quicklyAnsKey}
