@@ -265,24 +265,21 @@ export default function () {
                                 <CopyIcon width={20} height={20} class={iconClass[1]} />
                                 <span class={iconClass[1]}>点击拷贝</span>
                               </div>
-                              <DoubleConfirm
-                                label="确认删除"
-                                position="-right-2 top-3"
-                                onConfirm={() => {
+                              <div
+                                class={iconClass[0]}
+                                onClick={() => {
                                   removeHistory(h.id)
                                 }}
                               >
-                                <div class={iconClass[0]}>
-                                  <TrashIcon
-                                    height={20}
-                                    width={20}
-                                    class="text-danger group-hover/btn:text-active"
-                                  />
-                                  <span class="text-danger group-hover/btn:text-active">
-                                    删除历史
-                                  </span>
-                                </div>
-                              </DoubleConfirm>
+                                <TrashIcon
+                                  height={20}
+                                  width={20}
+                                  class="text-danger group-hover/btn:text-active"
+                                />
+                                <span class="text-danger group-hover/btn:text-active">
+                                  删除历史
+                                </span>
+                              </div>
                             </div>
                           </Show>
                         </div>
