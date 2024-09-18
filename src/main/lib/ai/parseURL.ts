@@ -27,6 +27,7 @@ export async function parseURL2Str(url: string): Promise<string> {
     },
     show: false
   })
+  tempWin.minimize()
   try {
     tempWin.loadURL(url)
     const res = await tempWin.webContents.executeJavaScript('document.documentElement.outerHTML')
@@ -41,23 +42,4 @@ export async function parseURL2Str(url: string): Promise<string> {
     tempWin = null
   }
   return '无效网页'
-  // 如果内容过少，则怀疑为单页面应用或遇到安全验证，使用puppeteer解析
-  // try {
-  //   const page = await (await puppeteer.launch()).newPage()
-  //   await page.goto(url, { waitUntil: 'networkidle2', timeout: 60000 })
-  //   const doc = new Readability(new JSDOM(await page.content()).window.document).parse() || {
-  //     title: '',
-  //     textContent: ''
-  //   }
-  //   // 释放资源
-  //   await page.close()
-  //   return `${doc.title}\n\n` + doc.textContent
-  // } catch (e) {
-  //   if ((e as Error).message.includes('timeout')) throw new Error('页面解析超时')
-  //   if (doc) {
-  //     return `${doc.title}\n\n` + doc.content
-  //   } else {
-  //     throw new Error('页面解析超时')
-  //   }
-  // }
 }

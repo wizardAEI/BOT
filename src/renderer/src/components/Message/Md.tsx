@@ -99,6 +99,7 @@ export default function Md(props: {
   const htmlString = createMemo(() => {
     const content = props.content
     const md = MarkdownIt({
+      html: true,
       linkify: true,
       breaks: true
     })
