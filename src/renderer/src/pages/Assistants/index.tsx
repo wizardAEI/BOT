@@ -1,6 +1,5 @@
 import EditIcon from '@renderer/assets/icon/base/EditIcon'
 import Plus from '@renderer/assets/icon/base/Plus'
-import CapitalIcon from '@renderer/components/ui/CapitalIcon'
 import {
   assistants,
   assistantsStatus,
@@ -20,6 +19,7 @@ import { useToast } from '@renderer/components/ui/Toast'
 import TrashIcon from '@renderer/assets/icon/TrashIcon'
 import BotIcon from '@renderer/components/ui/BotIcon'
 import InuseIcon from '@renderer/assets/icon/InuseIcon'
+import Md from '@renderer/components/Message/Md'
 
 import EditBox from './EditBox'
 
@@ -144,7 +144,9 @@ export default function () {
                     </DoubleConfirm>
                   </div>
                 </div>
-                <div class="">{a.introduce || '暂无介绍'}</div>
+                <div class="">
+                  <Md class="text-sm" content={a.introduce || '暂无介绍'} />
+                </div>
               </div>
             </Show>
           )}

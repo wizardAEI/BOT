@@ -1,6 +1,7 @@
 import { useNavigate } from '@solidjs/router'
 import { Show, createEffect, onCleanup, onMount } from 'solid-js'
 import { IpcRendererEvent } from 'electron'
+import mermaid from 'mermaid'
 
 import TopBar from './components/TopBar'
 import { loadConfig, setUpdaterStatus, settingStore, systemStore } from './store/setting'
@@ -64,7 +65,7 @@ const App = (props) => {
     // FEAT: OCR
     OCRInit()
 
-    // 主题
+    // FEAT: 主题
     createEffect(() => {
       // 插入 .win
       if (navigator.userAgent.includes('Windows')) {
@@ -130,6 +131,12 @@ const App = (props) => {
       if ((e.key === 'f' || e.key === 'F') && (e.ctrlKey || e.metaKey)) {
         event.emit('globalSearch')
       }
+    })
+
+    // FEAT: 增加 Mermaid 支持
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: 'default'
     })
   })
 

@@ -1,7 +1,7 @@
 {
   "name": "gomoon",
   "productName": "Gomoon",
-  "version": "1.2.1",
+  "version": "1.2.2",
   "description": "A ai tools for everyone on Mac, Windows and Linux.",
   "main": "./out/main/index.js",
   "author": "aei",
@@ -58,6 +58,7 @@
     "markdown-it": "^14.1.0",
     "markdown-it-emoji": "^3.0.0",
     "markdown-it-highlightjs": "^4.0.1",
+    "mermaid": "^11.2.1",
     "moment": "^2.30.1",
     "node-fetch": "^2.6.4",
     "node-llama-cpp": "^2.8.9",

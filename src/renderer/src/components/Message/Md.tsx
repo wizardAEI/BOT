@@ -8,6 +8,7 @@ import SpeechIcon from '@renderer/assets/icon/SpeechIcon'
 import { load } from 'cheerio'
 import { escape, escapeRegExp } from 'lodash'
 import SearchIcon from '@renderer/assets/icon/base/SearchIcon'
+import mermaid from 'mermaid'
 
 import { findContent, setFindContent, showSearch } from './GlobalSearch'
 
@@ -144,7 +145,14 @@ export default function Md(props: {
     md.renderer.rules.fence = (...args) => {
       const [tokens, idx] = args
       const token = tokens[idx]
+      const language = token.info.trim()
       const rawCode = fence(...args)
+      if (language === 'mermaid') {
+        mermaid.parse(token.content).then(() => {
+          mermaid.contentLoaded()
+        })
+        return `<div class="mermaid">${token.content}</div>`
+      }
       return `<div class="relative mt-2 w-full text-text1">
           <div data-code=${encodeURIComponent(
             token.content

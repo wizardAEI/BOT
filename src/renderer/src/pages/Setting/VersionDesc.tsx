@@ -5,6 +5,13 @@ import { For, Show, createSignal } from 'solid-js'
 
 const versions = [
   {
+    version: '1.2.2',
+    contents: [
+      '一些细节的优化',
+      'gomoon官网上线了<a href="https://gomoon.top/explore" target="_blank">Prompt 分享</a>板块~'
+    ]
+  },
+  {
     version: '1.2.1',
     contents: [
       '一些细节的优化',
@@ -123,7 +130,9 @@ export default function () {
             {(content, index) => {
               return (
                 <>
-                  &nbsp;{index() + 1}. {content} <br />
+                  {/* eslint-disable-next-line solid/no-innerhtml */}
+                  &nbsp;{index() + 1}. <span innerHTML={content} />
+                  <br />
                 </>
               )
             }}

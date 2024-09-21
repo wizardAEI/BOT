@@ -419,7 +419,7 @@ export const newChatLlama = (config: { src: string; temperature: number }) => {
 }
 
 export const newOllamaModel = (config: Models['Ollama'], index = 0) => {
-  const arr = ['model', 'model2', 'model3'] as const
+  const arr = ['model', 'model1', 'model2'] as const
   console.log(config[arr[index]])
   const chatOllama = new ChatOllama({
     model: config[arr[index]],

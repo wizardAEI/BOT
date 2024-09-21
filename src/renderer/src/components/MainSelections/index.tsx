@@ -17,6 +17,7 @@ import { getCurrentMemo, memories } from '@renderer/store/memo'
 import { memoCapsule } from '@renderer/store/input'
 
 import BotIcon from '../ui/BotIcon'
+import Md from '../Message/Md'
 
 import ModelSelect from './ModelSelect'
 
@@ -85,8 +86,17 @@ export default function (props: { type: 'chat' | 'ans' }) {
           <span class="text-text1 ">更多助手...</span>
         </div>
       </div>
+      <div>
+        <Show when={currentA().introduce}>
+          <div class="mx-auto mt-4 max-w-4xl gap-2 p-6">
+            <div class="flex items-center justify-center rounded-md bg-dark p-4">
+              <Md class="text-sm" content={currentA().introduce || ''} />
+            </div>
+          </div>
+        </Show>
+      </div>
       <Show when={memoCapsule()}>
-        <div class="mt-10 flex select-none flex-wrap justify-center gap-2 px-3">
+        <div class="mt-6 flex select-none flex-wrap justify-center gap-2 px-3">
           <For each={memoList()}>
             {(m) => (
               <div

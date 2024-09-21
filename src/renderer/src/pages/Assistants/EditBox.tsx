@@ -88,8 +88,15 @@ export default function EditBox(props: {
         </div>
       </div>
       <Field title="介绍">
-        <input
+        {/* <input
           type="text"
+          value={a().introduce ?? ''}
+          onChange={(e) => setField('introduce', e.currentTarget.value)}
+          placeholder=""
+        /> */}
+        <textarea
+          class="text-sm"
+          rows={3}
           value={a().introduce ?? ''}
           onChange={(e) => setField('introduce', e.currentTarget.value)}
           placeholder="可不填"
@@ -97,6 +104,7 @@ export default function EditBox(props: {
       </Field>
       <Field title="提示（Prompt）">
         <textarea
+          class="text-sm"
           rows={4}
           value={a().prompt}
           onChange={(e) => setField('prompt', e.currentTarget.value)}
