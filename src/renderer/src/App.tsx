@@ -135,8 +135,15 @@ const App = (props) => {
 
     // FEAT: 增加 Mermaid 支持
     mermaid.initialize({
-      startOnLoad: true,
-      theme: 'default'
+      theme: 'default',
+      themeVariables: {
+        fontSize: '12px', // 设置全局字体大小
+        nodeTextSize: '8px', // 设置节点字体大小
+        edgeTextSize: '10px' // 设置边字体大小
+      },
+      flowchart: {
+        useMaxWidth: false,
+      }
     })
   })
 

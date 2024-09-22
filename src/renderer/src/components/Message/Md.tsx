@@ -11,6 +11,15 @@ import SearchIcon from '@renderer/assets/icon/base/SearchIcon'
 import mermaid from 'mermaid'
 
 import { findContent, setFindContent, showSearch } from './GlobalSearch'
+import { ulid } from 'ulid'
+
+function symbolConvert(str: string) {
+  // 将常见的中文符号转为对应的英文符号，将@转为@#64
+  // 定义需要编码的特殊字符
+  const specialChars = /[@，。！？、（）【】《》￥”“‘’；：×÷(){}]/g
+  // 编码函数
+  return str.replace(specialChars, (char) => `&#${char.charCodeAt(0)};`)
+}
 
 function customPostProcessor(md: MarkdownIt) {
   // latex_optimize 需要在 inline rule 之前，否则修改不会生效
@@ -148,10 +157,22 @@ export default function Md(props: {
       const language = token.info.trim()
       const rawCode = fence(...args)
       if (language === 'mermaid') {
-        mermaid.parse(token.content).then(() => {
-          mermaid.contentLoaded()
+        const id = `mermaid-${ulid()}`
+        setTimeout(() => {
+          const element = document.getElementById(id)
+          if (!element) return
+          mermaid
+            .render('graphDiv', symbolConvert(token.content), element)
+            .then(({ svg, bindFunctions }) => {
+              element.innerHTML = svg
+              bindFunctions?.(element)
+            })
+            .catch((e) => {
+              console.error('mermaid render error', e)
+              element.innerHTML = rawCode
+            })
         })
-        return `<div class="mermaid">${token.content}</div>`
+        return `<div id="${id}" class="overflow-auto"></div>`
       }
       return `<div class="relative mt-2 w-full text-text1">
           <div data-code=${encodeURIComponent(
