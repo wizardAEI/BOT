@@ -6,12 +6,12 @@ import katex from '@vscode/markdown-it-katex'
 import { full as emoji } from 'markdown-it-emoji'
 import SpeechIcon from '@renderer/assets/icon/SpeechIcon'
 import { load } from 'cheerio'
-import { escape, escapeRegExp } from 'lodash'
+import { debounce, escape, escapeRegExp, throttle } from 'lodash'
 import SearchIcon from '@renderer/assets/icon/base/SearchIcon'
 import mermaid from 'mermaid'
+import { ulid } from 'ulid'
 
 import { findContent, setFindContent, showSearch } from './GlobalSearch'
-import { ulid } from 'ulid'
 
 function symbolConvert(str: string) {
   // 将常见的中文符号转为对应的英文符号，将@转为@#64
@@ -158,7 +158,7 @@ export default function Md(props: {
       const rawCode = fence(...args)
       if (language === 'mermaid') {
         const id = `mermaid-${ulid()}`
-        setTimeout(() => {
+        const debounced = debounce(() => {
           const element = document.getElementById(id)
           if (!element) return
           mermaid
@@ -171,7 +171,8 @@ export default function Md(props: {
               console.error('mermaid render error', e)
               element.innerHTML = rawCode
             })
-        })
+        }, 400)
+        setTimeout(debounced)
         return `<div id="${id}" class="overflow-auto"></div>`
       }
       return `<div class="relative mt-2 w-full text-text1">

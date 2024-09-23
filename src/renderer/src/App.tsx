@@ -142,7 +142,7 @@ const App = (props) => {
         edgeTextSize: '10px' // 设置边字体大小
       },
       flowchart: {
-        useMaxWidth: false,
+        useMaxWidth: false
       }
     })
   })
