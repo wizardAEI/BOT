@@ -44,7 +44,7 @@ function customPostProcessor(md: MarkdownIt) {
   })
 }
 
-export function getMd(realTime = false) {
+export function getMd(isGenerating = false) {
   const md = MarkdownIt({
     html: true,
     linkify: true,
@@ -73,7 +73,7 @@ export function getMd(realTime = false) {
     const token = tokens[idx]
     const language = token.info.trim()
     const rawCode = fence(...args)
-    if (language === 'mermaid') {
+    if (language === 'mermaid' && !isGenerating) {
       const id = `mermaid-${ulid().slice(-5)}`
       const render = () => {
         const element = document.getElementById(id)
@@ -89,8 +89,8 @@ export function getMd(realTime = false) {
             element.innerHTML = rawCode
           })
       }
-      setTimeout(realTime ? debounce(render, 400) : render)
-      return `<div id="${id}" class="overflow-auto"></div>`
+      setTimeout(render)
+      return `<div id="${id}" class="overflow-auto">${rawCode}</div>`
     }
     return rawCode
   }
@@ -102,6 +102,7 @@ export default function Md(props: {
   content: string
   onSpeak?: (c: string) => void
   needSelectBtn?: boolean
+  isGenerating?: boolean
 }) {
   let selectContent = ''
   const [source] = createSignal('')
@@ -162,7 +163,7 @@ export default function Md(props: {
   const htmlString = createMemo(() => {
     const content = props.content
 
-    const md = getMd(true)
+    const md = getMd(props.isGenerating)
     // FEAT: 复制功能
     useEventListener('click', (e) => {
       const el = e.target as HTMLElement
