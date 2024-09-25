@@ -1,10 +1,7 @@
 import { answerStore } from '@renderer/store/answer'
 import { msgs } from '@renderer/store/chat'
-import MarkdownIt from 'markdown-it'
-import { full as emoji } from 'markdown-it-emoji'
-import mdHighlight from 'markdown-it-highlightjs'
-import katex from '@vscode/markdown-it-katex'
 import moment from 'moment'
+import { getMd } from '@renderer/components/Message/Md'
 
 import { parseString } from '../ai/parseString'
 import html2canvas from '../html2canvas'
@@ -70,14 +67,7 @@ export default async function (
       'data:text/plain;charset=utf-8,' +
       encodeURIComponent(`> From [Gomoon](https://gomoon.top)\n${data}`)
   } else {
-    const md = MarkdownIt({
-      linkify: true,
-      breaks: true,
-      html: true
-    })
-      .use(mdHighlight)
-      .use(katex)
-      .use(emoji)
+    const md = getMd()
     const html = md.render(data)
     const dom = document.createElement('div')
     document.body.append(dom)
@@ -90,9 +80,17 @@ export default async function (
     ${html}
     </div>`
 
-    const canvas = await html2canvas(dom.children[0] as HTMLDivElement, {
-      backgroundColor: '#00000000'
-    })
+    let canvas: any
+
+    await new Promise((resolve) =>
+      // FEAT: 等待200ms，防止dom渲染未完成（如 mermaid 等渲染工作未完成）
+      setTimeout(async () => {
+        canvas = await html2canvas(dom.children[0] as HTMLDivElement, {
+          backgroundColor: '#00000000'
+        })
+        resolve(null)
+      }, 200)
+    )
 
     const canvasF = document.createElement('canvas')
     const ctx = canvasF.getContext('2d')!

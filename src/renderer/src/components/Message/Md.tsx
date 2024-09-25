@@ -6,7 +6,7 @@ import katex from '@vscode/markdown-it-katex'
 import { full as emoji } from 'markdown-it-emoji'
 import SpeechIcon from '@renderer/assets/icon/SpeechIcon'
 import { load } from 'cheerio'
-import { debounce, escape, escapeRegExp, throttle } from 'lodash'
+import { debounce, escape, escapeRegExp } from 'lodash'
 import SearchIcon from '@renderer/assets/icon/base/SearchIcon'
 import mermaid from 'mermaid'
 import { ulid } from 'ulid'
@@ -42,6 +42,59 @@ function customPostProcessor(md: MarkdownIt) {
       }
     }
   })
+}
+
+export function getMd(realTime = false) {
+  const md = MarkdownIt({
+    html: true,
+    linkify: true,
+    breaks: true
+  })
+    .use(customPostProcessor)
+    .use(mdHighlight)
+    .use(katex, {
+      throwOnError: false
+    })
+    .use(emoji)
+
+  // FEAT: 限制图片宽度
+  md.renderer.rules.image = (tokens, idx) => {
+    const token = tokens[idx]
+    const srcIndex = token.attrIndex('src')
+    const src = token.attrs![srcIndex][1]
+    const alt = token.content || ''
+    const style = `border-radius: 5px;`
+    return `<img src="${src}" alt="${alt}" class="md:max-w-2xl max-w-full" style="${style}" referrerpolicy="no-referrer"/>`
+  }
+
+  const fence = md.renderer.rules.fence!
+  md.renderer.rules.fence = (...args) => {
+    const [tokens, idx] = args
+    const token = tokens[idx]
+    const language = token.info.trim()
+    const rawCode = fence(...args)
+    if (language === 'mermaid') {
+      const id = `mermaid-${ulid().slice(-5)}`
+      const render = () => {
+        const element = document.getElementById(id)
+        if (!element) return
+        mermaid
+          .render('graphDiv' + ulid().slice(-5), symbolConvert(token.content), element)
+          .then(({ svg, bindFunctions }) => {
+            element.innerHTML = svg
+            bindFunctions?.(element)
+          })
+          .catch((e) => {
+            console.error('mermaid render error', e)
+            element.innerHTML = rawCode
+          })
+      }
+      setTimeout(realTime ? debounce(render, 400) : render)
+      return `<div id="${id}" class="overflow-auto"></div>`
+    }
+    return rawCode
+  }
+  return md
 }
 
 export default function Md(props: {
@@ -108,28 +161,8 @@ export default function Md(props: {
 
   const htmlString = createMemo(() => {
     const content = props.content
-    const md = MarkdownIt({
-      html: true,
-      linkify: true,
-      breaks: true
-    })
-      .use(customPostProcessor)
-      .use(mdHighlight)
-      .use(katex, {
-        throwOnError: false
-      })
-      .use(emoji)
 
-    // FEAT: 限制图片宽度
-    md.renderer.rules.image = (tokens, idx) => {
-      const token = tokens[idx]
-      const srcIndex = token.attrIndex('src')
-      const src = token.attrs![srcIndex][1]
-      const alt = token.content || ''
-      const style = `border-radius: 5px;`
-      return `<img src="${src}" alt="${alt}" class="md:max-w-2xl max-w-full" style="${style}" referrerpolicy="no-referrer"/>`
-    }
-
+    const md = getMd(true)
     // FEAT: 复制功能
     useEventListener('click', (e) => {
       const el = e.target as HTMLElement
@@ -157,23 +190,7 @@ export default function Md(props: {
       const language = token.info.trim()
       const rawCode = fence(...args)
       if (language === 'mermaid') {
-        const id = `mermaid-${ulid()}`
-        const debounced = debounce(() => {
-          const element = document.getElementById(id)
-          if (!element) return
-          mermaid
-            .render('graphDiv', symbolConvert(token.content), element)
-            .then(({ svg, bindFunctions }) => {
-              element.innerHTML = svg
-              bindFunctions?.(element)
-            })
-            .catch((e) => {
-              console.error('mermaid render error', e)
-              element.innerHTML = rawCode
-            })
-        }, 400)
-        setTimeout(debounced)
-        return `<div id="${id}" class="overflow-auto"></div>`
+        return rawCode
       }
       return `<div class="relative mt-2 w-full text-text1">
           <div data-code=${encodeURIComponent(

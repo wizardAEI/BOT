@@ -7,7 +7,7 @@ export default function Button(
     <button
       {...props}
       class={
-        'rounded border border-solid border-gray bg-transparent px-4 py-1 hover:border-active hover:text-active ' +
+        'rounded-md border border-solid border-gray bg-transparent px-4 py-1 hover:border-active hover:text-active ' +
         props.class
       }
     >
