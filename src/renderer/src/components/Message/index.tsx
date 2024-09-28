@@ -36,16 +36,17 @@ export default function Message(props: {
   onRemove?: () => void
 }) {
   const isGenerating = createMemo(() => {
-    return  (props.id && msgStatus.generatingList.includes(props.id)) ||
-    (props.type === 'ans' && ansStatus.isGenerating)
+    return (
+      (props.id && msgStatus.generatingList.includes(props.id)) ||
+      (props.type === 'ans' && ansStatus.isGenerating)
+    )
   })
   const meta = createMemo(() => {
     return parseDisplayArr(props.content)
   })
   // FEAT: 是否显示小组件
   const showComps = createMemo(
-    () =>
-      (props.type === 'ai' || props.type === 'ans') && !isGenerating()
+    () => (props.type === 'ai' || props.type === 'ans') && !isGenerating()
   )
   const showCompsByUser = createMemo(() => {
     if (props.id) {
@@ -128,9 +129,7 @@ export default function Message(props: {
   return (
     <div class="group relative max-w-full">
       <div class={style[props.type] + ' relative mx-3 my-4 rounded-xl px-3 py-[10px]'}>
-        <Show
-          when={isGenerating()}
-        >
+        <Show when={isGenerating()}>
           <Pause id={props.id} type={props.type} />
         </Show>
         <Show when={showComps() && !props.editing}>
