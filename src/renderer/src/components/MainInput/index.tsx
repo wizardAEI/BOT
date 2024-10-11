@@ -30,16 +30,23 @@ const typeDict: {
   question: 'ans'
 }
 
+// FEAT: 多模态模型
 const multiModals = [
   'GPT4',
   'GPTCustom',
   'GPTMINI',
   'Ollama',
+  'Ollama1',
+  'Ollama2',
   'Moonshot8k',
   'Moonshot32k',
   'Moonshot128k',
   'GeminiPro',
-  'GeminiCustom'
+  'GeminiCustom',
+  'ClaudeSonnet',
+  'ClaudeHaiku',
+  'ClaudeOpus',
+  'CustomModel'
 ] as ModelsType[]
 
 /**

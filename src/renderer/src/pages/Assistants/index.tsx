@@ -20,6 +20,8 @@ import TrashIcon from '@renderer/assets/icon/TrashIcon'
 import BotIcon from '@renderer/components/ui/BotIcon'
 import InuseIcon from '@renderer/assets/icon/InuseIcon'
 import Md from '@renderer/components/Message/Md'
+import SearchIcon from '@renderer/assets/icon/base/SearchIcon'
+import BrowserIcon from '@renderer/assets/icon/BrowserIcon'
 
 import EditBox from './EditBox'
 
@@ -53,19 +55,35 @@ export default function () {
   return (
     <div class="mx-auto w-full overflow-hidden lg:max-w-4xl">
       <div class="mb-5 animate-scale-down-entrance select-none p-2">
-        <div
-          class="group/create relative m-4 mx-2 flex cursor-pointer items-center justify-center gap-2 rounded-2xl bg-dark p-4"
-          onClick={() => {
-            createAssistant()
-          }}
-        >
-          <Plus
-            height={30}
-            width={30}
-            class="cursor-pointer text-gray duration-100 group-hover/create:text-active"
-          />
-          <span class="text-base">创建一个属于你的{type ? map[type] : ''}助手</span>
+        <div class="mx-2 my-4 flex gap-2">
+          <div
+            class="group/create relative flex flex-1 cursor-pointer items-center justify-center gap-2 rounded-2xl bg-dark py-4"
+            onClick={() => {
+              createAssistant()
+            }}
+          >
+            <Plus
+              height={24}
+              width={24}
+              class="cursor-pointer text-gray duration-100 group-hover/create:text-active"
+            />
+            <span class="text-base">创建{type ? map[type] : ''}助手</span>
+          </div>
+          <div
+            class="group/create relative flex flex-1 cursor-pointer items-center justify-center gap-2 rounded-2xl bg-dark py-4"
+            onClick={() => {
+              window.open('https://gomoon.top/explore')
+            }}
+          >
+            <BrowserIcon
+              height={24}
+              width={24}
+              class="cursor-pointer text-gray duration-100 group-hover/create:text-active"
+            />
+            <span class="text-base">探索更多助手</span>
+          </div>
         </div>
+
         <For each={assistants.filter((a) => a.type === type)}>
           {(a) => (
             <Show
