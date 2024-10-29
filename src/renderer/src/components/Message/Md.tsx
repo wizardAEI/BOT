@@ -44,9 +44,10 @@ function customPostProcessor(md: MarkdownIt) {
   })
 }
 
-export function getMd(isGenerating = false) {
+export function getMd(isGenerating = false, options?: { showHtml?: boolean }) {
+  const { showHtml } = options || {}
   const md = MarkdownIt({
-    html: true,
+    html: showHtml,
     linkify: true,
     breaks: true
   })
@@ -103,6 +104,7 @@ export default function Md(props: {
   onSpeak?: (c: string) => void
   needSelectBtn?: boolean
   isGenerating?: boolean
+  showHtml?: boolean
 }) {
   let selectContent = ''
   const [source] = createSignal('')
@@ -163,7 +165,9 @@ export default function Md(props: {
   const htmlString = createMemo(() => {
     const content = props.content
 
-    const md = getMd(props.isGenerating)
+    const md = getMd(props.isGenerating, {
+      showHtml: props.showHtml
+    })
     // FEAT: 复制功能
     useEventListener('click', (e) => {
       const el = e.target as HTMLElement

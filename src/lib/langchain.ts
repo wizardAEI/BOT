@@ -1,7 +1,7 @@
 import { ChatAlibabaTongyi } from '@langchain/community/chat_models/alibaba_tongyi'
 import type { ChatLlamaCpp } from '@langchain/community/chat_models/llama_cpp'
-import { ChatBaiduWenxin } from '@langchain/community/chat_models/baiduwenxin'
-import { ChatOllama } from '@langchain/community/chat_models/ollama'
+import { ChatBaiduQianfan } from '@langchain/baidu-qianfan'
+import { ChatOllama } from '@langchain/ollama'
 import { ChatAnthropic } from '@langchain/anthropic'
 import { ChatGoogleGenerativeAI } from '@langchain/google-genai'
 import { HumanMessage, SystemMessage, AIMessage } from '@langchain/core/messages'
@@ -13,7 +13,7 @@ import { HarmBlockThreshold, HarmCategory } from '@google/generative-ai'
 import { base64ToFile } from './utils_web'
 
 export type ModelInterfaceType =
-  | ChatBaiduWenxin
+  | ChatBaiduQianfan
   | ChatOpenAI
   | ChatAlibabaTongyi
   | ChatGoogleGenerativeAI
@@ -60,7 +60,6 @@ export interface Models {
     model2: string
     temperature: number
   }
-  // kimi
   Moonshot: {
     apiKey: string
     baseURL: string
@@ -72,10 +71,13 @@ export interface Models {
     temperature: number
   }
   CustomModel: {
-    apiKey: string
-    baseURL: string
-    temperature: number
-    customModel: string
+    models: {
+      apiKey: string
+      baseURL: string
+      temperature: number
+      customModel: string
+    }[]
+    index: number
   }
 }
 export type ModelsType =
@@ -106,7 +108,7 @@ export type ModelsType =
   | 'CustomModel'
 
 export const modelDict: {
-  [key in ModelsType]: { maxToken: number; label: string }
+  [key in ModelsType]: { label: string; maxToken: number }
 } = {
   GPT3: {
     label: 'GPT-3.5 Turbo',
@@ -205,7 +207,7 @@ export const modelDict: {
     maxToken: 200000
   },
   CustomModel: {
-    label: '自定义模型',
+    label: 'Custom Model',
     maxToken: 0
   }
 }
@@ -257,10 +259,15 @@ export const defaultModels: () => Models = () => ({
     temperature: 0.3
   },
   CustomModel: {
-    baseURL: '',
-    apiKey: '',
-    customModel: '',
-    temperature: 0.3
+    models: [
+      {
+        baseURL: '',
+        apiKey: '',
+        customModel: '',
+        temperature: 0.3
+      }
+    ],
+    index: 0
   }
 })
 
@@ -272,11 +279,11 @@ export const newERNIEModal = (
   },
   modelName: string
 ) =>
-  new ChatBaiduWenxin({
+  new ChatBaiduQianfan({
     streaming: true,
     modelName,
-    baiduApiKey: config.apiKey || 'api-key',
-    baiduSecretKey: config.secretKey || 'secret-key',
+    qianfanAK: config.apiKey || 'api-key',
+    qianfanSK: config.secretKey || 'secret-key',
     temperature: config.temperature
   })
 
@@ -420,7 +427,6 @@ export const newChatLlama = (config: { src: string; temperature: number }) => {
 
 export const newOllamaModel = (config: Models['Ollama'], index = 0) => {
   const arr = ['model', 'model1', 'model2'] as const
-  console.log(config[arr[index]])
   const chatOllama = new ChatOllama({
     model: config[arr[index]],
     baseUrl: config.address,
@@ -454,16 +460,18 @@ export const newClaudeModel = (config: Models['Claude'], modelName: string) =>
     anthropicApiUrl: config.baseURL
   })
 
-export const newCustomModel = (model: Models['CustomModel']) =>
-  new ChatOpenAI({
+export const newCustomModel = (model: Models['CustomModel']) => {
+  const current = model.models[model.index]
+  return new ChatOpenAI({
     streaming: true,
-    modelName: model.customModel,
-    openAIApiKey: model.apiKey || 'api-key',
-    temperature: model.temperature,
+    modelName: current.customModel,
+    openAIApiKey: current.apiKey || 'api-key',
+    temperature: current.temperature,
     configuration: {
-      baseURL: model.baseURL
+      baseURL: current.baseURL
     }
   })
+}
 
 export const loadLMMap = async (
   model: Models
@@ -498,7 +506,9 @@ export const loadLMMap = async (
 })
 
 export const msgDict: {
-  [key in 'human' | 'system' | 'ai']: (c: MessageContent) => unknown
+  [key in 'human' | 'system' | 'ai']: (
+    c: MessageContent
+  ) => HumanMessage | SystemMessage | AIMessage
 } = {
   human: (c: MessageContent) =>
     new HumanMessage({

@@ -35,7 +35,7 @@ class Service {
 
   private convertPromise: {
     resolve: (value?: Buffer) => void
-    reject: (reason?: any) => void
+    reject: (reason?: unknown) => void
   }
 
   private buffers: Buffer

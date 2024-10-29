@@ -1,8 +1,8 @@
+import { debounce } from 'lodash'
 import { Show, createEffect, createSignal } from 'solid-js'
 
 export default function (props: {
   onChange: (value: number) => void
-  defaultValue?: number
   value?: number
   min?: number
   max?: number
@@ -11,27 +11,21 @@ export default function (props: {
   let container: HTMLDivElement | undefined
   let range: HTMLInputElement | undefined
   const [value, setValue] = createSignal(
-    props.defaultValue !== undefined
-      ? props.percentage
-        ? props.defaultValue * 100
-        : props.defaultValue
-      : 70
+    props.value !== undefined ? (props.percentage ? props.value * 100 : props.value) : 70
   )
   createEffect(() => {
-    if (props.value) {
-      setValue(props.percentage ? props.value * 100 : props.value)
-    }
     const containerWidth = container?.getBoundingClientRect().width
     range!.style.width = `${
       (containerWidth! - 34) *
       ((value() - (props.min || 0)) / ((props.max || 100) - (props.min || 0)))
     }px`
   })
+  const change = debounce((num) => props.onChange(num), 300)
   const updateValue = (e: unknown) => {
     const value = ((e as { target: unknown }).target as HTMLInputElement).value
     setValue(Number(value))
     const num = props.percentage ? parseFloat((Number(value) / 100).toFixed(2)) : Number(value)
-    props.onChange(num)
+    change(num)
   }
   return (
     <div class="relative flex w-full items-center gap-2" ref={container}>

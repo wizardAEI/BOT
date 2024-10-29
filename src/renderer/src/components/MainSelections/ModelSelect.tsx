@@ -4,7 +4,7 @@ import QWenIcon from '@renderer/assets/icon/models/QWenIcon'
 import { setSelectedModel, userData } from '@renderer/store/user'
 import { createMemo, createSignal, For, onCleanup, Show } from 'solid-js'
 import type { JSXElement } from 'solid-js'
-import { settingStore } from '@renderer/store/setting'
+import { setCustomModelIndex, settingStore } from '@renderer/store/setting'
 import { ModelsType, modelDict } from '@lib/langchain'
 import GeminiIcon from '@renderer/assets/icon/models/GeminiIcon'
 import KimiIcon from '@renderer/assets/icon/models/KimiIcon'
@@ -22,6 +22,7 @@ export function getModelOptions() {
     icon: (size: number) => JSXElement
     value: ModelsType
     maxToken: number
+    index?: number
   }[] = [
     {
       label: <span class="text-current">{modelDict['GPT3'].label}</span>,
@@ -401,22 +402,28 @@ export function getModelOptions() {
     )
   }
 
-  if (settingStore.models.CustomModel.customModel && settingStore.models.CustomModel.apiKey) {
-    options.push({
-      label: <span>{modelDict['CustomModel'].label}</span>,
-      icon(size: number) {
-        return (
-          <CustomIcon
-            width={size}
-            height={size}
-            class="cursor-pointer overflow-hidden rounded-md"
-          />
-        )
-      },
-      value: 'CustomModel',
-      maxToken: modelDict['CustomModel'].maxToken
-    })
-  }
+  settingStore.models.CustomModel.models.forEach((m, index) => {
+    if (m.apiKey) {
+      options.push({
+        label: (
+          <span class="max-w-32 overflow-hidden text-ellipsis text-nowrap">{m.customModel}</span>
+        ),
+        icon(size: number) {
+          return (
+            <CustomIcon
+              width={size}
+              height={size}
+              class="cursor-pointer overflow-hidden rounded-md"
+            />
+          )
+        },
+        value: 'CustomModel',
+        index,
+        maxToken: modelDict['CustomModel'].maxToken
+      })
+    }
+  })
+
   return options
 }
 
@@ -430,8 +437,11 @@ export default function ModelSelect(props: {
   const [isOpen, setIsOpen] = createSignal(false)
   // 使用 createSignal 来管理选中的值
   // 选择选项的处理函数
-  const handleSelect = (option) => {
+  const handleSelect = (option: ReturnType<typeof getModelOptions>[number]) => {
     setSelectedModel(option.value)
+    if (option.index && option.value === 'CustomModel') {
+      setCustomModelIndex(option.index)
+    }
   }
   const label = createMemo(() => {
     return (
@@ -486,7 +496,6 @@ export default function ModelSelect(props: {
                         {option.icon(20)}
                         {option.label}
                       </div>
-
                       <Show
                         when={option.maxToken}
                         fallback={'🧩 🧩'}

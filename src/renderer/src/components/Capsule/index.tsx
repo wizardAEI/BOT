@@ -19,7 +19,7 @@ export default function Capsule(props: { type: 'chat' | 'ans'; botName: string; 
         onClick={() => {
           nav('/assistants?type=' + props.type)
         }}
-        class="mx-[-2px] my-[-2px] flex cursor-pointer items-center gap-1 rounded-xl rounded-r-none border-2 border-solid border-transparent px-[6px] py-[2px] text-text2 hover:border-active hover:text-text1"
+        class="mx-[-2px] my-[-2px] flex cursor-pointer items-center gap-1 rounded-xl rounded-r-none border-2 border-solid border-transparent px-[6px] py-[3px] text-text2 duration-200 hover:border-active hover:text-text1"
       >
         {/* <CapitalIcon bg="bg-active-gradient" size={16} content={props.botName} /> */}
         <BotIcon size={17} seed={props.seed || 'default'} />
@@ -30,7 +30,7 @@ export default function Capsule(props: { type: 'chat' | 'ans'; botName: string; 
           onClick={() => {
             nav('/memories?type=' + props.type)
           }}
-          class="my-[-2px] ml-[-2px] flex h-7 cursor-pointer items-center gap-1 border-2 border-solid border-transparent px-1 text-text2 hover:border-active hover:text-text1"
+          class="my-[-2px] ml-[-2px] flex h-7 cursor-pointer items-center gap-1 border-2 border-solid border-transparent px-1 text-text2 duration-200 hover:border-active hover:text-text1"
         >
           <CapitalIcon bg="bg-green-gradient" size={17} content={getCurrentMemo().name} />
           <span class="mt-[1px] max-w-[120px] truncate text-sm leading-[17px]">
@@ -38,7 +38,7 @@ export default function Capsule(props: { type: 'chat' | 'ans'; botName: string; 
           </span>
         </div>
       </Show>
-      <div class="relative my-[-2px] mr-[-2px] rounded-xl rounded-l-none border-2 border-solid border-transparent px-[6px] py-[3px] hover:border-active">
+      <div class="relative my-[-2px] mr-[-2px] rounded-xl rounded-l-none border-2 border-solid border-transparent px-[6px] py-[3px] duration-200 hover:border-active">
         <ModelSelect position="right-0" translate="translate-x-1/2" size={18} />
       </div>
       <Show when={pageData.isSpeech}>

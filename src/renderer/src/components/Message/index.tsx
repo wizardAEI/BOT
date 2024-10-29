@@ -170,6 +170,7 @@ export default function Message(props: {
             m.type === 'text' ? (
               <Md
                 needSelectBtn
+                showHtml={props.type === 'ai' || props.type === 'ans'}
                 class={mdStyle[props.type]}
                 content={m.content}
                 onSpeak={speakText}

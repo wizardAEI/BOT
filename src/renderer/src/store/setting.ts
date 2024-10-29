@@ -90,6 +90,14 @@ export async function setModels<T extends keyof Models>(
   )
 }
 
+export function setCustomModelIndex(index: number) {
+  setSettingStore('models', 'CustomModel', 'index', index)
+}
+
+export function setCustomModels(models: Models['CustomModel']['models']) {
+  setSettingStore('models', 'CustomModel', 'models', models)
+}
+
 export async function updateModelsToFile() {
   const config = unwrap(settingStore)
   if (isEqual(config.models, config.oldModels)) return

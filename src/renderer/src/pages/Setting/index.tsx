@@ -42,6 +42,8 @@ import {
 
 import VersionDesc from './VersionDesc'
 import { fontFamilyOption, themeOptions } from './theme'
+import Custom from './Custom'
+
 export default function Setting() {
   const toast = useToast()
   onMount(() => {
@@ -445,39 +447,7 @@ export default function Setting() {
                   </div>
                 }
               >
-                <EditInput
-                  label="模型名"
-                  value={settingStore.models.CustomModel.customModel}
-                  onSave={(v) => {
-                    setModels(v.trim(), 'CustomModel', 'customModel')
-                  }}
-                />
-                <EditInput
-                  label="apiKey"
-                  value={settingStore.models.CustomModel.apiKey}
-                  onSave={(v) => {
-                    setModels(v.trim(), 'CustomModel', 'apiKey')
-                  }}
-                />
-                <EditInput
-                  label="baseURL"
-                  value={settingStore.models.CustomModel.baseURL}
-                  onSave={(v) => {
-                    setModels(v.trim(), 'CustomModel', 'baseURL')
-                  }}
-                />
-                <div class="mb-1 flex h-7 items-center gap-4">
-                  <span class="font-bold">创造性/随机性</span>
-                  <div class="w-60">
-                    <Slider
-                      value={settingStore.models.CustomModel.temperature}
-                      percentage
-                      onChange={(v) => {
-                        setModels(v, 'CustomModel', 'temperature')
-                      }}
-                    />
-                  </div>
-                </div>
+                <Custom />
               </Collapse>
             </Expand>
           </div>
