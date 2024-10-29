@@ -4,7 +4,7 @@ import QWenIcon from '@renderer/assets/icon/models/QWenIcon'
 import { setSelectedModel, userData } from '@renderer/store/user'
 import { createMemo, createSignal, For, onCleanup, Show } from 'solid-js'
 import type { JSXElement } from 'solid-js'
-import { setCustomModelIndex, settingStore } from '@renderer/store/setting'
+import { getCustomModelIndex, setCustomModelIndex, settingStore } from '@renderer/store/setting'
 import { ModelsType, modelDict } from '@lib/langchain'
 import GeminiIcon from '@renderer/assets/icon/models/GeminiIcon'
 import KimiIcon from '@renderer/assets/icon/models/KimiIcon'
@@ -439,7 +439,7 @@ export default function ModelSelect(props: {
   // 选择选项的处理函数
   const handleSelect = (option: ReturnType<typeof getModelOptions>[number]) => {
     setSelectedModel(option.value)
-    if (option.index && option.value === 'CustomModel') {
+    if (option.index !== undefined && option.value === 'CustomModel') {
       setCustomModelIndex(option.index)
     }
   }
@@ -450,6 +450,12 @@ export default function ModelSelect(props: {
       )
     )
   })
+  const selected = (option: ReturnType<typeof getModelOptions>[number]) => {
+    if (option.index !== undefined && option.value === 'CustomModel') {
+      return option.index === getCustomModelIndex()
+    }
+    return userData.selectedModel === option.value
+  }
   return (
     <>
       <div
@@ -484,7 +490,7 @@ export default function ModelSelect(props: {
                 {(option) => (
                   <div
                     class={`mb-1 w-full cursor-pointer break-words rounded-lg py-1 pl-2 ${
-                      userData.selectedModel === option.value ? 'bg-active' : ''
+                      selected(option) ? 'bg-active' : ''
                     } duration-100 hover:bg-active hover:text-text-active
                 `}
                     onClick={() => handleSelect(option)}

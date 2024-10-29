@@ -90,8 +90,15 @@ export async function setModels<T extends keyof Models>(
   )
 }
 
-export function setCustomModelIndex(index: number) {
+export async function setCustomModelIndex(index: number) {
   setSettingStore('models', 'CustomModel', 'index', index)
+  const config = unwrap(settingStore)
+  if (isEqual(config.models, config.oldModels)) return
+  await window.api.setModels(config.models)
+  loadConfig()
+}
+export function getCustomModelIndex() {
+  return settingStore.models.CustomModel.index
 }
 
 export function setCustomModels(models: Models['CustomModel']['models']) {

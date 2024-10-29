@@ -290,8 +290,8 @@ export const newERNIEModal = (
 export const newGPTModal = (
   config: { apiKey: string; baseURL: string; temperature: number },
   modelName: string
-) =>
-  new ChatOpenAI({
+) => {
+  return new ChatOpenAI({
     streaming: true,
     modelName,
     openAIApiKey: config.apiKey || 'api-key',
@@ -300,6 +300,8 @@ export const newGPTModal = (
       baseURL: config.baseURL
     }
   })
+}
+
 export const newDeepSeekModel = (
   config: { apiKey: string; temperature: number },
   modelName: string
