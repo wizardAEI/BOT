@@ -6,6 +6,10 @@ import { For, Show, createSignal } from 'solid-js'
 const versions = [
   {
     version: '1.2.3',
+    contents: ['一些细节的优化', '支持了创建更多个自定义模型']
+  },
+  {
+    version: '1.2.3',
     contents: [
       '一些细节的优化',
       'gomoon官网上线了<a href="https://gomoon.top/explore" target="_blank">Prompt 分享</a>板块~'
