@@ -77,7 +77,7 @@ export interface Models {
       temperature: number
       customModel: string
     }[]
-    index: number
+    selectModel: string
   }
 }
 export type ModelsType =
@@ -267,7 +267,7 @@ export const defaultModels: () => Models = () => ({
         temperature: 0.3
       }
     ],
-    index: 0
+    selectModel: ''
   }
 })
 
@@ -463,7 +463,7 @@ export const newClaudeModel = (config: Models['Claude'], modelName: string) =>
   })
 
 export const newCustomModel = (model: Models['CustomModel']) => {
-  const current = model.models[model.index]
+  const current = model.models.find((m) => m.customModel === model.selectModel) || model.models[0]
   return new ChatOpenAI({
     streaming: true,
     modelName: current.customModel,

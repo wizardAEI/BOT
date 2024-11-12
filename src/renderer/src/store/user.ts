@@ -5,6 +5,7 @@ import { createMemo } from 'solid-js'
 
 import { assistants, useAssistant } from './assistants'
 import { memories, useMemo } from './memo'
+import { setCustomModelSelected } from './setting'
 
 /**
  * @abstract 所有不在设置页面的数据
@@ -58,12 +59,17 @@ export function userHasUse() {
 
 export function changeMatchModel(model: AssistantModel['matchModel'], id: string) {
   if (model && model !== 'current') {
+    if (model.startsWith('CustomModel')) {
+      const target = model.slice(12)
+      model = 'CustomModel'
+      setCustomModelSelected(target)
+    }
     window.api
       .setUserData({
         selectedModel: model
       })
       .then(() => {
-        setUserData('selectedModel', model)
+        setUserData('selectedModel', model as ModelsType)
       })
   }
   setUserState('preSelectedAssistant', id)

@@ -33,10 +33,19 @@ export default function EditBox(props: {
       [key]: value
     })
   }
-  const options = getModelOptions().map((m) => ({
-    label: modelDict[m.value].label,
-    value: m.value
-  }))
+  const options = getModelOptions().map((m) => {
+    console.log(m)
+    if (m.value === 'CustomModel') {
+      return {
+        label: m.selected,
+        value: `CustomModel-${m.selected}`
+      }
+    }
+    return {
+      label: modelDict[m.value].label,
+      value: m.value
+    }
+  })
   return (
     <div class="relative mx-2 my-4 rounded-2xl bg-dark p-4 duration-150">
       <div class="mb-2 flex items-center gap-4 md:justify-center">

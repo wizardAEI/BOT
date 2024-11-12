@@ -5,6 +5,10 @@ import { For, Show, createSignal } from 'solid-js'
 
 const versions = [
   {
+    version: '1.2.5',
+    contents: ['一些细节的优化']
+  },
+  {
     version: '1.2.4',
     contents: ['一些细节的优化', '支持了创建更多个自定义模型']
   },

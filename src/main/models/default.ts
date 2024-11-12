@@ -1,4 +1,5 @@
 import { readFileSync } from 'fs'
+import os from 'os'
 
 import { getResourcesPath } from '../lib'
 import { defaultModels } from '../../lib/langchain'
@@ -18,7 +19,7 @@ export function getDefaultConfig(): SettingModel {
     isOnTop: false,
     models: defaultModels(),
     quicklyAnsKey: 'C',
-    quicklyWakeUpKeys: 'CmdOrCtrl+G',
+    quicklyWakeUpKeys: os.platform() === 'darwin' ? 'Cmd+G' : 'Ctrl+G',
     sendWithCmdOrCtrl: true,
     theme: 'gomoon-theme',
     chatFontSize: 14,

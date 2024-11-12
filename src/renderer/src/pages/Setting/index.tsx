@@ -470,7 +470,7 @@ export default function Setting() {
             <div class="item-center flex justify-between gap-3">
               <span class="h-6">唤起应用快捷键</span>
               <input
-                class={`px-2 py-[1px] text-center ${settingStore.quicklyWakeUpKeys.split('+').length > 2 ? 'max-w-[150px]' : 'max-w-[80px]'}`}
+                class={`px-2 py-[1px] text-center ${settingStore.quicklyWakeUpKeys.split('+').length > 2 ? 'max-w-[150px]' : 'max-w-[90px]'}`}
                 value={settingStore.quicklyWakeUpKeys}
                 placeholder="唤起应用快捷键"
                 onKeyDown={(e) => {

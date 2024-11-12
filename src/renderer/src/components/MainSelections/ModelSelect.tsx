@@ -4,7 +4,11 @@ import QWenIcon from '@renderer/assets/icon/models/QWenIcon'
 import { setSelectedModel, userData } from '@renderer/store/user'
 import { createMemo, createSignal, For, onCleanup, Show } from 'solid-js'
 import type { JSXElement } from 'solid-js'
-import { getCustomModelIndex, setCustomModelIndex, settingStore } from '@renderer/store/setting'
+import {
+  getCustomModelSelected,
+  setCustomModelSelected,
+  settingStore
+} from '@renderer/store/setting'
 import { ModelsType, modelDict } from '@lib/langchain'
 import GeminiIcon from '@renderer/assets/icon/models/GeminiIcon'
 import KimiIcon from '@renderer/assets/icon/models/KimiIcon'
@@ -22,7 +26,7 @@ export function getModelOptions() {
     icon: (size: number) => JSXElement
     value: ModelsType
     maxToken: number
-    index?: number
+    selected?: string
   }[] = [
     {
       label: <span class="text-current">{modelDict['GPT3'].label}</span>,
@@ -402,8 +406,8 @@ export function getModelOptions() {
     )
   }
 
-  settingStore.models.CustomModel.models.forEach((m, index) => {
-    if (m.apiKey) {
+  settingStore.models.CustomModel.models.forEach((m) => {
+    if (m.apiKey && m.customModel) {
       options.push({
         label: (
           <span class="max-w-32 overflow-hidden text-ellipsis text-nowrap">{m.customModel}</span>
@@ -418,7 +422,7 @@ export function getModelOptions() {
           )
         },
         value: 'CustomModel',
-        index,
+        selected: m.customModel,
         maxToken: modelDict['CustomModel'].maxToken
       })
     }
@@ -439,8 +443,8 @@ export default function ModelSelect(props: {
   // 选择选项的处理函数
   const handleSelect = (option: ReturnType<typeof getModelOptions>[number]) => {
     setSelectedModel(option.value)
-    if (option.index !== undefined && option.value === 'CustomModel') {
-      setCustomModelIndex(option.index)
+    if (option.selected !== undefined && option.value === 'CustomModel') {
+      setCustomModelSelected(option.selected)
     }
   }
   const label = createMemo(() => {
@@ -451,8 +455,8 @@ export default function ModelSelect(props: {
     )
   })
   const selected = (option: ReturnType<typeof getModelOptions>[number]) => {
-    if (option.index !== undefined && option.value === 'CustomModel') {
-      return option.index === getCustomModelIndex()
+    if (option.selected !== undefined && option.value === 'CustomModel') {
+      return option.selected === getCustomModelSelected()
     }
     return userData.selectedModel === option.value
   }
