@@ -344,9 +344,16 @@ export function createWindow(): void {
   // 点击关闭时隐藏窗口而不是退出
   mainWindow.on('close', (event) => {
     if (!quitApp.shouldQuit) {
+      console.log('xxxxx')
       mainWindow?.hide()
       event.preventDefault()
     }
+  })
+  app.on('activate', (_) => {
+    mainWindow?.show()
+    mainWindow?.webContents.send('show-window', {
+      text: ''
+    })
   })
 
   // tray

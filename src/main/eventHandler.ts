@@ -215,10 +215,22 @@ export function initAppEventsHandler() {
   })
   ipcMain.handle('get-token-num', async (_, content: string) => {
     if (content === '') return 0
+    // 大于5000只求5000字作为平均数
+    if (content.length > 5000) {
+      const partTokenLen =
+        (
+          await tokenize(
+            content.replaceAll(/<gomoon-image (.*?)>(.*?)<\/gomoon-image>/g, '').slice(0, 3000)
+          )
+        ).length || 0
+      return Math.round(partTokenLen / (partTokenLen / content.length))
+    }
     return (
-      // 图片单独计费
-      (await tokenize(content.replaceAll(/<gomoon-image (.*?)>(.*?)<\/gomoon-image>/g, '')))
-        .length || 0
+      (
+        await tokenize(
+          content.replaceAll(/<gomoon-image (.*?)>(.*?)<\/gomoon-image>/g, '').slice(0, 3000)
+        )
+      ).length || 0
     )
   })
 

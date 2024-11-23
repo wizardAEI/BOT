@@ -455,7 +455,7 @@ export default function ModelSelect(props: {
     )
   })
   const selected = (option: ReturnType<typeof getModelOptions>[number]) => {
-    if (option.selected !== undefined && option.value === 'CustomModel') {
+    if (option.selected !== undefined && userData.selectedModel === 'CustomModel') {
       return option.selected === getCustomModelSelected()
     }
     return userData.selectedModel === option.value
@@ -500,7 +500,7 @@ export default function ModelSelect(props: {
                     onClick={() => handleSelect(option)}
                   >
                     <div
-                      class={`flex items-center justify-between pr-2 ${userData.selectedModel === option.value && 'text-text-active'}`}
+                      class={`flex items-center justify-between pr-2 ${selected(option) && 'text-text-active'}`}
                     >
                       <div class="flex select-none gap-2">
                         {option.icon(20)}
