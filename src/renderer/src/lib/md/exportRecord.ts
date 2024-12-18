@@ -67,7 +67,7 @@ export default async function (
       'data:text/plain;charset=utf-8,' +
       encodeURIComponent(`> From [Gomoon](https://gomoon.top)\n${data}`)
   } else {
-    const md = getMd()
+    const md = getMd(false, { showHtml: true })
     const html = md.render(data)
     const dom = document.createElement('div')
     document.body.append(dom)
