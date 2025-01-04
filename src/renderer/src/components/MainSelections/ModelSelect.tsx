@@ -28,48 +28,6 @@ export function getModelOptions() {
     maxToken: number
     selected?: string
   }[] = [
-    {
-      label: <span class="text-current">{modelDict['GPT3'].label}</span>,
-      icon(size: number) {
-        return (
-          <ChatGptIcon
-            width={size}
-            height={size}
-            class="cursor-pointer overflow-hidden rounded-md"
-          />
-        )
-      },
-      value: 'GPT3',
-      maxToken: modelDict['GPT3'].maxToken
-    },
-    {
-      label: <span class="text-current">{modelDict['GPT4'].label}</span>,
-      icon(size: number) {
-        return (
-          <ChatGptIcon
-            width={size}
-            height={size}
-            class="cursor-pointer overflow-hidden rounded-md"
-          />
-        )
-      },
-      value: 'GPT4',
-      maxToken: modelDict['GPT4'].maxToken
-    },
-    {
-      label: <span class="text-current">{modelDict['GPTMINI'].label}</span>,
-      icon(size: number) {
-        return (
-          <ChatGptIcon
-            width={size}
-            height={size}
-            class="cursor-pointer overflow-hidden rounded-md"
-          />
-        )
-      },
-      value: 'GPTMINI',
-      maxToken: modelDict['GPTMINI'].maxToken
-    }
   ]
 
   if (settingStore.models.OpenAI.customModel) {
@@ -88,82 +46,86 @@ export function getModelOptions() {
       maxToken: modelDict['GeminiCustom'].maxToken
     })
   }
+  
+  if(settingStore.models.BaiduWenxin.apiKey) {
+    options.push(
+      {
+        label: <span>{modelDict['ERNIE3'].label}</span>,
+        icon(size: number) {
+          return (
+            <WenxinIcon
+              width={size}
+              height={size}
+              class="cursor-pointer overflow-hidden rounded-md"
+            />
+          )
+        },
+        value: 'ERNIE3',
+        maxToken: modelDict['ERNIE3'].maxToken
+      },
+      {
+        label: <span>{modelDict['ERNIE4'].label}</span>,
+        icon(size: number) {
+          return (
+            <WenxinIcon
+              width={size}
+              height={size}
+              class="cursor-pointer overflow-hidden rounded-md"
+            />
+          )
+        },
+        value: 'ERNIE4',
+        maxToken: modelDict['ERNIE4'].maxToken
+      },
+      {
+        label: <span>{modelDict['ERNIE128K'].label}</span>,
+        icon(size: number) {
+          return (
+            <WenxinIcon
+              width={size}
+              height={size}
+              class="cursor-pointer overflow-hidden rounded-md"
+            />
+          )
+        },
+        value: 'ERNIE128K',
+        maxToken: modelDict['ERNIE128K'].maxToken
+      }
+    )
+  }
 
-  options.push(
-    {
-      label: <span>{modelDict['ERNIE3'].label}</span>,
-      icon(size: number) {
-        return (
-          <WenxinIcon
-            width={size}
-            height={size}
-            class="cursor-pointer overflow-hidden rounded-md"
-          />
-        )
+  if (settingStore.models.DeepSeek.apiKey) {
+    options.push(
+      {
+        label: <span>{modelDict['DeepSeekChat'].label}</span>,
+        icon(size: number) {
+          return (
+            <DeepSeekIcon
+              width={size}
+              height={size}
+              class="cursor-pointer overflow-hidden rounded-md"
+            />
+          )
+        },
+        value: 'DeepSeekChat',
+        maxToken: modelDict['DeepSeekChat'].maxToken
       },
-      value: 'ERNIE3',
-      maxToken: modelDict['ERNIE3'].maxToken
-    },
-    {
-      label: <span>{modelDict['ERNIE4'].label}</span>,
-      icon(size: number) {
-        return (
-          <WenxinIcon
-            width={size}
-            height={size}
-            class="cursor-pointer overflow-hidden rounded-md"
-          />
-        )
-      },
-      value: 'ERNIE4',
-      maxToken: modelDict['ERNIE4'].maxToken
-    },
-    {
-      label: <span>{modelDict['ERNIE128K'].label}</span>,
-      icon(size: number) {
-        return (
-          <WenxinIcon
-            width={size}
-            height={size}
-            class="cursor-pointer overflow-hidden rounded-md"
-          />
-        )
-      },
-      value: 'ERNIE128K',
-      maxToken: modelDict['ERNIE128K'].maxToken
-    }
-  )
-
-  options.push(
-    {
-      label: <span>{modelDict['DeepSeekChat'].label}</span>,
-      icon(size: number) {
-        return (
-          <DeepSeekIcon
-            width={size}
-            height={size}
-            class="cursor-pointer overflow-hidden rounded-md"
-          />
-        )
-      },
-      value: 'DeepSeekChat',
-      maxToken: modelDict['DeepSeekChat'].maxToken
-    },
-    {
-      label: <span>{modelDict['DeepSeekCoder'].label}</span>,
-      icon(size: number) {
-        return (
-          <DeepSeekIcon
-            width={size}
-            height={size}
-            class="cursor-pointer overflow-hidden rounded-md"
-          />
-        )
-      },
-      value: 'DeepSeekCoder',
-      maxToken: modelDict['DeepSeekCoder'].maxToken
-    }
-  )
+      {
+        label: <span>{modelDict['DeepSeekCoder'].label}</span>,
+        icon(size: number) {
+          return (
+            <DeepSeekIcon
+              width={size}
+              height={size}
+              class="cursor-pointer overflow-hidden rounded-md"
+            />
+          )
+        },
+        value: 'DeepSeekCoder',
+        maxToken: modelDict['DeepSeekCoder'].maxToken
+      }
+    )
+  }
 
   if (settingStore.models.AliQWen.apiKey) {
     options.push(
@@ -326,6 +288,7 @@ export function getModelOptions() {
       maxToken: modelDict['Ollama'].maxToken
     })
   }
+
   if (settingStore.models.Ollama.address && settingStore.models.Ollama.model1) {
     options.push({
       label: <span>{modelDict['Ollama1'].label}</span>,
@@ -342,6 +305,7 @@ export function getModelOptions() {
       maxToken: modelDict['Ollama'].maxToken
     })
   }
+
   if (settingStore.models.Ollama.address && settingStore.models.Ollama.model2) {
     options.push({
       label: <span>{modelDict['Ollama2'].label}</span>,
@@ -404,6 +368,51 @@ export function getModelOptions() {
         maxToken: modelDict['ClaudeSonnet'].maxToken
       }
     )
+  }
+
+  if (settingStore.models.OpenAI.apiKey || options.length === 0) {
+    options.unshift({
+      label: <span class="text-current">{modelDict['GPT3'].label}</span>,
+      icon(size: number) {
+        return (
+          <ChatGptIcon
+            width={size}
+            height={size}
+            class="cursor-pointer overflow-hidden rounded-md"
+          />
+        )
+      },
+      value: 'GPT3',
+      maxToken: modelDict['GPT3'].maxToken
+    },
+    {
+      label: <span class="text-current">{modelDict['GPT4'].label}</span>,
+      icon(size: number) {
+        return (
+          <ChatGptIcon
+            width={size}
+            height={size}
+            class="cursor-pointer overflow-hidden rounded-md"
+          />
+        )
+      },
+      value: 'GPT4',
+      maxToken: modelDict['GPT4'].maxToken
+    },
+    {
+      label: <span class="text-current">{modelDict['GPTMINI'].label}</span>,
+      icon(size: number) {
+        return (
+          <ChatGptIcon
+            width={size}
+            height={size}
+            class="cursor-pointer overflow-hidden rounded-md"
+          />
+        )
+      },
+      value: 'GPTMINI',
+      maxToken: modelDict['GPTMINI'].maxToken
+    })
   }
 
   settingStore.models.CustomModel.models.forEach((m) => {
