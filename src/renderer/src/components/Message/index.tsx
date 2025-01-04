@@ -96,6 +96,7 @@ export default function Message(props: {
         }
         const cancelReceive = window.api.receiveBuf(async (_, buf) => {
           // FEAT: Buffer有用的数据可能只是部分，这里使用偏移量来确保获取到正确数据而不是整个ArrayBuffer
+          // @ts-ignore
           buffers.push(buf.buffer.slice(buf.byteOffset, buf.byteOffset + buf.byteLength))
           append()
         })
