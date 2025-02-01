@@ -51,7 +51,7 @@ export function setQuicklyAns(key: string) {
     }
   })
   eventTracker.stdout.on('data', (data) => {
-    // FEAT: 双击复制回答
+    // FEAT: 快速复制回答
     if (`${data}` === 'quickly-ans' && mainWindow) {
       const copyText = clipboard.readText().trim()
       if (!copyText) {

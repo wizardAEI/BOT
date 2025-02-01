@@ -186,6 +186,9 @@ export async function stopGenMsg(id: string) {
   abortMap.get(id)?.()
   abortMap.delete(id)
 
+  // 1s 后强制终止状态，防止网络原因无法终止
+  setTimeout(() => removeGeneratingStatus(id), 1000)
+
   // 自行计算token消费
   const currentMsgs = msgs.reduce((acc, msg) => {
     acc += msg.content
