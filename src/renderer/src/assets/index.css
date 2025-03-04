@@ -213,3 +213,7 @@ button:hover {
   padding: 0.5em 0.5em;
   margin: 0.5em 0;
 }
+
+.markdown hr {
+  @apply my-2;
+}

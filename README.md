@@ -31,7 +31,7 @@
 | ---------- | --------------------------------------------------------------------------- |
 | ChatGPT    | GPT3，GPT4 Mini，GPT4，支持 OpenAI API 模式的模型                           |
 | 文心       | 文心3.5，文心4.0，文心128k                                                  |
-| DeepSeek   | DeepSeek Coder 和 DeepSeek Coder 最新版本                                   |
+| DeepSeek   | DeepSeek V3 和 DeepSeek R1                                                  |
 | 千问       | 千问Turbo，千问Plus，千问Max                                                |
 | Gemini     | Gemini Pro 和 Gemini 自定义模型                                             |
 | Kimi       | Kimi 8k，Kimi 32k，Kimi 128k                                                |

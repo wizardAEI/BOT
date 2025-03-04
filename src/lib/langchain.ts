@@ -7,6 +7,7 @@ import { ChatGoogleGenerativeAI } from '@langchain/google-genai'
 import { HumanMessage, SystemMessage, AIMessage } from '@langchain/core/messages'
 import type { BaseMessage, MessageContent } from 'langchain/schema'
 import { ChatOpenAI, OpenAIClient } from '@langchain/openai'
+import { ChatDeepSeek } from '@langchain/deepseek'
 import { isArray } from 'lodash'
 import { HarmBlockThreshold, HarmCategory } from '@google/generative-ai'
 
@@ -89,7 +90,7 @@ export type ModelsType =
   | 'GPTMINI'
   | 'GPTCustom'
   | 'DeepSeekChat'
-  | 'DeepSeekCoder'
+  | 'DeepSeekReasoner'
   | 'QWenTurbo'
   | 'QWenLong'
   | 'QWenMax'
@@ -135,11 +136,11 @@ export const modelDict: {
     maxToken: 128000
   },
   DeepSeekChat: {
-    label: 'DeepSeek Chat',
+    label: 'DeepSeek V3',
     maxToken: 128000
   },
-  DeepSeekCoder: {
-    label: 'DeepSeek Coder',
+  DeepSeekReasoner: {
+    label: 'DeepSeek R1',
     maxToken: 128000
   },
   GPTCustom: {
@@ -305,16 +306,51 @@ export const newGPTModal = (
 export const newDeepSeekModel = (
   config: { apiKey: string; temperature: number },
   modelName: string
-) =>
-  new ChatOpenAI({
+) => {
+  const deepSeek = new ChatDeepSeek({
     streaming: true,
     modelName,
-    openAIApiKey: config.apiKey || 'api-key',
+    apiKey: config.apiKey || 'api-key',
     temperature: config.temperature,
     configuration: {
       baseURL: 'https://api.deepseek.com/v1'
     }
   })
+  deepSeek.invoke = async (...args) => {
+    const stream = await deepSeek.stream(args[0], {
+      signal: args[1]?.signal as AbortSignal,
+      callbacks: [
+        {
+          handleLLMEnd(output) {
+            args?.[1]?.callbacks?.[0]?.handleLLMEnd?.(output)
+          },
+          handleLLMError(err) {
+            args?.[1]?.callbacks?.[0]?.handleLLMError?.(err)
+          }
+        }
+      ]
+    })
+    let reasoning_staus = 0 // 0 未开始，1 推理中，2 推理结束
+    for await (const chunk of stream) {
+      if (reasoning_staus === 0) {
+        reasoning_staus = 1
+      }
+      if (chunk.additional_kwargs.reasoning_content) {
+        args?.[1]?.callbacks?.[0]?.handleLLMNewToken?.(chunk.additional_kwargs.reasoning_content)
+      }
+      if (chunk.content) {
+        if (reasoning_staus === 1) {
+          args?.[1]?.callbacks?.[0]?.handleLLMNewToken?.('\n\n---\n')
+          reasoning_staus = 2
+        }
+        args?.[1]?.callbacks?.[0]?.handleLLMNewToken?.(chunk.content)
+      }
+    }
+    return null as any
+  }
+  return deepSeek
+}
+
 export const newQWenModel = (
   config: { apiKey: string; temperature: number; enableSearch?: boolean },
   modelName: string
@@ -487,7 +523,7 @@ export const loadLMMap = async (
   GPTMINI: newGPTModal(model.OpenAI, 'gpt-4o-mini'),
   GPT4: newGPTModal(model.OpenAI, 'gpt-4o'),
   DeepSeekChat: newDeepSeekModel(model.DeepSeek, 'deepseek-chat'),
-  DeepSeekCoder: newDeepSeekModel(model.DeepSeek, 'deepseek-coder'),
+  DeepSeekReasoner: newDeepSeekModel(model.DeepSeek, 'deepseek-reasoner'),
   GPTCustom: newGPTModal(model.OpenAI, model.OpenAI.customModel),
   QWenTurbo: newQWenModel(model.AliQWen, 'qwen-turbo'),
   QWenMax: newQWenModel(model.AliQWen, 'qwen-max'),

@@ -27,8 +27,7 @@ export function getModelOptions() {
     value: ModelsType
     maxToken: number
     selected?: string
-  }[] = [
-  ]
+  }[] = []
 
   if (settingStore.models.OpenAI.customModel) {
     options.push({
@@ -46,8 +45,8 @@ export function getModelOptions() {
       maxToken: modelDict['GeminiCustom'].maxToken
     })
   }
-  
-  if(settingStore.models.BaiduWenxin.apiKey) {
+
+  if (settingStore.models.BaiduWenxin.apiKey) {
     options.push(
       {
         label: <span>{modelDict['ERNIE3'].label}</span>,
@@ -111,7 +110,7 @@ export function getModelOptions() {
         maxToken: modelDict['DeepSeekChat'].maxToken
       },
       {
-        label: <span>{modelDict['DeepSeekCoder'].label}</span>,
+        label: <span>{modelDict['DeepSeekReasoner'].label}</span>,
         icon(size: number) {
           return (
             <DeepSeekIcon
@@ -121,8 +120,8 @@ export function getModelOptions() {
             />
           )
         },
-        value: 'DeepSeekCoder',
-        maxToken: modelDict['DeepSeekCoder'].maxToken
+        value: 'DeepSeekReasoner',
+        maxToken: modelDict['DeepSeekReasoner'].maxToken
       }
     )
   }
@@ -371,48 +370,50 @@ export function getModelOptions() {
   }
 
   if (settingStore.models.OpenAI.apiKey || options.length === 0) {
-    options.unshift({
-      label: <span class="text-current">{modelDict['GPT3'].label}</span>,
-      icon(size: number) {
-        return (
-          <ChatGptIcon
-            width={size}
-            height={size}
-            class="cursor-pointer overflow-hidden rounded-md"
-          />
-        )
+    options.unshift(
+      {
+        label: <span class="text-current">{modelDict['GPT3'].label}</span>,
+        icon(size: number) {
+          return (
+            <ChatGptIcon
+              width={size}
+              height={size}
+              class="cursor-pointer overflow-hidden rounded-md"
+            />
+          )
+        },
+        value: 'GPT3',
+        maxToken: modelDict['GPT3'].maxToken
       },
-      value: 'GPT3',
-      maxToken: modelDict['GPT3'].maxToken
-    },
-    {
-      label: <span class="text-current">{modelDict['GPT4'].label}</span>,
-      icon(size: number) {
-        return (
-          <ChatGptIcon
-            width={size}
-            height={size}
-            class="cursor-pointer overflow-hidden rounded-md"
-          />
-        )
+      {
+        label: <span class="text-current">{modelDict['GPT4'].label}</span>,
+        icon(size: number) {
+          return (
+            <ChatGptIcon
+              width={size}
+              height={size}
+              class="cursor-pointer overflow-hidden rounded-md"
+            />
+          )
+        },
+        value: 'GPT4',
+        maxToken: modelDict['GPT4'].maxToken
       },
-      value: 'GPT4',
-      maxToken: modelDict['GPT4'].maxToken
-    },
-    {
-      label: <span class="text-current">{modelDict['GPTMINI'].label}</span>,
-      icon(size: number) {
-        return (
-          <ChatGptIcon
-            width={size}
-            height={size}
-            class="cursor-pointer overflow-hidden rounded-md"
-          />
-        )
-      },
-      value: 'GPTMINI',
-      maxToken: modelDict['GPTMINI'].maxToken
-    })
+      {
+        label: <span class="text-current">{modelDict['GPTMINI'].label}</span>,
+        icon(size: number) {
+          return (
+            <ChatGptIcon
+              width={size}
+              height={size}
+              class="cursor-pointer overflow-hidden rounded-md"
+            />
+          )
+        },
+        value: 'GPTMINI',
+        maxToken: modelDict['GPTMINI'].maxToken
+      }
+    )
   }
 
   settingStore.models.CustomModel.models.forEach((m) => {
