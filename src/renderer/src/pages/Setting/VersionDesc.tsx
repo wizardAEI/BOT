@@ -5,6 +5,10 @@ import { For, Show, createSignal } from 'solid-js'
 
 const versions = [
   {
+    version: '1.2.9',
+    contents: ['修复了快速问答快捷键异常的问题', '更新了 DeepSeek 模型']
+  },
+  {
     version: '1.2.8',
     contents: ['修复了朗读不能使用的问题', '优化了部分显示细节']
   },
