@@ -209,9 +209,8 @@ button:hover {
 }
 
 .markdown blockquote {
+  @apply my-2 px-2 py-1 opacity-70;
   border-left: 0.2em solid #64748b;
-  padding: 0.5em 0.5em;
-  margin: 0.5em 0;
 }
 
 .markdown hr {

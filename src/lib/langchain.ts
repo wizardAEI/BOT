@@ -334,13 +334,21 @@ export const newDeepSeekModel = (
     for await (const chunk of stream) {
       if (reasoning_staus === 0) {
         reasoning_staus = 1
+        args?.[1]?.callbacks?.[0]?.handleLLMNewToken?.('> ')
       }
       if (chunk.additional_kwargs.reasoning_content) {
-        args?.[1]?.callbacks?.[0]?.handleLLMNewToken?.(chunk.additional_kwargs.reasoning_content)
+        // 遇到了回车的时候，需要适配在回车前面加上 >
+        console.log('>>', chunk.additional_kwargs)
+        if ((chunk.additional_kwargs.reasoning_content as string).includes('\n')) {
+          args?.[1]?.callbacks?.[0]?.handleLLMNewToken?.(
+            (chunk.additional_kwargs.reasoning_content as string).replaceAll('\n', '\n> ')
+          )
+        } else {
+          args?.[1]?.callbacks?.[0]?.handleLLMNewToken?.(chunk.additional_kwargs.reasoning_content)
+        }
       }
       if (chunk.content) {
         if (reasoning_staus === 1) {
-          args?.[1]?.callbacks?.[0]?.handleLLMNewToken?.('\n\n---\n')
           reasoning_staus = 2
         }
         args?.[1]?.callbacks?.[0]?.handleLLMNewToken?.(chunk.content)
