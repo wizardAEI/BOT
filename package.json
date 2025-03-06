@@ -50,7 +50,6 @@
     "apache-arrow": "^16.0.0",
     "cheerio": "^1.0.0-rc.12",
     "d3-dsv": "2",
-    "electron": "29.3.1",
     "electron-updater": "^6.1.8",
     "highlight.js": "^11.9.0",
     "jsdom": "^24.0.0",
@@ -97,6 +96,7 @@
     "tailwindcss-themer": "^4.0.0",
     "typescript": "^5.4.5",
     "vite": "^5.2.10",
+    "electron": "29.3.1",
     "vite-plugin-solid": "^2.10.2"
   },
   "packageManager": "yarn@1.22.22"
