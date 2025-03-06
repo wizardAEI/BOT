@@ -85,7 +85,6 @@ export type ModelsType =
   | 'ERNIE3'
   | 'ERNIE4'
   | 'ERNIE128K'
-  | 'GPT3'
   | 'GPT4'
   | 'GPTMINI'
   | 'GPTCustom'
@@ -111,10 +110,6 @@ export type ModelsType =
 export const modelDict: {
   [key in ModelsType]: { label: string; maxToken: number }
 } = {
-  GPT3: {
-    label: 'GPT-3.5 Turbo',
-    maxToken: 16385
-  },
   GPTMINI: {
     label: 'GPT-4 Mini',
     maxToken: 128000
@@ -332,13 +327,12 @@ export const newDeepSeekModel = (
     })
     let reasoning_staus = 0 // 0 未开始，1 推理中，2 推理结束
     for await (const chunk of stream) {
-      if (reasoning_staus === 0) {
-        reasoning_staus = 1
-        args?.[1]?.callbacks?.[0]?.handleLLMNewToken?.('> ')
-      }
       if (chunk.additional_kwargs.reasoning_content) {
+        if (reasoning_staus === 0) {
+          reasoning_staus = 1
+          args?.[1]?.callbacks?.[0]?.handleLLMNewToken?.('> ')
+        }
         // 遇到了回车的时候，需要适配在回车前面加上 >
-        console.log('>>', chunk.additional_kwargs)
         if ((chunk.additional_kwargs.reasoning_content as string).includes('\n')) {
           args?.[1]?.callbacks?.[0]?.handleLLMNewToken?.(
             (chunk.additional_kwargs.reasoning_content as string).replaceAll('\n', '\n> ')
@@ -527,7 +521,6 @@ export const loadLMMap = async (
   ERNIE3: newERNIEModal(model.BaiduWenxin, 'ERNIE-3.5-8K'),
   ERNIE4: newERNIEModal(model.BaiduWenxin, 'ERNIE-Bot-4'),
   ERNIE128K: newERNIEModal(model.BaiduWenxin, 'ERNIE-Speed-128K'),
-  GPT3: newGPTModal(model.OpenAI, 'gpt-3.5-turbo'),
   GPTMINI: newGPTModal(model.OpenAI, 'gpt-4o-mini'),
   GPT4: newGPTModal(model.OpenAI, 'gpt-4o'),
   DeepSeekChat: newDeepSeekModel(model.DeepSeek, 'deepseek-chat'),

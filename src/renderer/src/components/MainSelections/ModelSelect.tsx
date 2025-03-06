@@ -372,20 +372,6 @@ export function getModelOptions() {
   if (settingStore.models.OpenAI.apiKey || options.length === 0) {
     options.unshift(
       {
-        label: <span class="text-current">{modelDict['GPT3'].label}</span>,
-        icon(size: number) {
-          return (
-            <ChatGptIcon
-              width={size}
-              height={size}
-              class="cursor-pointer overflow-hidden rounded-md"
-            />
-          )
-        },
-        value: 'GPT3',
-        maxToken: modelDict['GPT3'].maxToken
-      },
-      {
         label: <span class="text-current">{modelDict['GPT4'].label}</span>,
         icon(size: number) {
           return (

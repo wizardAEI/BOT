@@ -36,7 +36,6 @@ const createModel = (model: ModelInterfaceType) => {
       ] as unknown
       return model.invoke(msgs, {
         signal: option.pauseSignal,
-        timeout: 1000 * 20,
         callbacks: [
           {
             handleLLMNewToken(token) {
@@ -81,8 +80,7 @@ const createModel = (model: ModelInterfaceType) => {
               }
             }
           ],
-          signal: option.pauseSignal,
-          timeout: 1000 * 20
+          signal: option.pauseSignal
         }
       )
     }

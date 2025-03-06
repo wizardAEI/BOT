@@ -29,7 +29,7 @@
 
 | 模型类型   | 模型名称                                                                    |
 | ---------- | --------------------------------------------------------------------------- |
-| ChatGPT    | GPT3，GPT4 Mini，GPT4，支持 OpenAI API 模式的模型                           |
+| ChatGPT    | GPT4 Mini，GPT4-o，支持 OpenAI API 模式的模型                               |
 | 文心       | 文心3.5，文心4.0，文心128k                                                  |
 | DeepSeek   | DeepSeek V3 和 DeepSeek R1                                                  |
 | 千问       | 千问Turbo，千问Plus，千问Max                                                |
